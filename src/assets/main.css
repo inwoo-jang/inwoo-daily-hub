@@ -1,0 +1,353 @@
+/**
+ * 전역 스타일 · 디자인 토큰
+ * ------------------------------------------------------------------
+ * 컨셉: Technical Editorial
+ *   - 따뜻한 종이(paper) 위에 근접 블랙(ink)으로 찍은 기술 문서 느낌
+ *   - 액센트는 딥 그린 하나로 제한. 색을 아껴 쓸수록 눌러야 할 곳이 또렷해진다
+ *   - 둥근 카드 + 소프트 섀도 대신 헤어라인과 여백으로 구획을 나눈다
+ *   - 메타 정보(라벨·쪽수·개수)는 모노스페이스로 — 기술 문서의 성격을 드러낸다
+ */
+
+/* ══════════════════════════════════════════════════════════════════
+   테마 1 · EDITORIAL (기본)
+   따뜻한 종이 위에 근접 블랙으로 찍은 기술 문서.
+   액센트는 딥 그린 하나. 헤어라인과 여백으로 구획을 나눈다.
+   ══════════════════════════════════════════════════════════════════ */
+
+:root,
+:root[data-theme='editorial'] {
+  --paper: #f6f4ef;
+  --surface: #fffefb;
+  --surface-sunken: #efece4;
+
+  --ink: #16191c;
+  --ink-soft: #3d4348;
+  --muted: #6f7479;
+  --faint: #9b9f9f;
+
+  --line: #e4e0d6;
+  --line-strong: #cfcabb;
+
+  --accent: #0f7a4e;
+  --accent-deep: #0a5637;
+  --accent-tint: #e7efe8;
+  --accent-line: #b6cfc0;
+  --on-accent: #ffffff;
+
+  --signal: #9a5b18;
+  --signal-tint: #f7efe3;
+  --signal-line: #e3d3ba;
+
+  --slate: #3f5666;
+  --slate-deep: #26373f;
+  --slate-tint: #ecefef;
+  --slate-line: #d2d8d9;
+
+  --danger: #a63d32;
+  --danger-tint: #f8ebe8;
+
+  --radius: 6px;
+  --radius-lg: 8px;
+  --shadow: none;
+  --card-border: 1px solid var(--line);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   테마 2 · TERMINAL
+   어두운 IDE. 코드를 오래 보는 사람을 위한 저조도 화면.
+   액센트는 형광 민트. 경계선은 거의 없고 배경 명도로 층을 나눈다.
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='terminal'] {
+  --paper: #14181f;
+  --surface: #1b212b;
+  --surface-sunken: #232b37;
+
+  --ink: #e8edf4;
+  --ink-soft: #c2ccda;
+  --muted: #8b98a9;
+  --faint: #6c7889;
+
+  --line: #2b3543;
+  --line-strong: #3c4859;
+
+  --accent: #3ddc97;
+  --accent-deep: #7ef0be;
+  --accent-tint: #1c2b28;
+  --accent-line: #2f4a41;
+  --on-accent: #0d1b16;
+
+  --signal: #e8a866;
+  --signal-tint: #2a2318;
+  --signal-line: #4a3a24;
+
+  --slate: #79b8e0;
+  --slate-deep: #a5d3f0;
+  --slate-tint: #1a2530;
+  --slate-line: #2d3f4e;
+
+  --danger: #f0847a;
+  --danger-tint: #2c1d1c;
+
+  --radius: 6px;
+  --radius-lg: 8px;
+  --shadow: none;
+  --card-border: 1px solid var(--line);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   테마 3 · BLUEPRINT
+   설계도. 차가운 청색 지면에 각진 모서리와 굵은 테두리.
+   액센트는 잉크 블루. 카드가 도면 조각처럼 보이도록 라운드를 없앴다.
+   ══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme='blueprint'] {
+  --paper: #eef1f6;
+  --surface: #ffffff;
+  --surface-sunken: #e2e8f1;
+
+  --ink: #12213a;
+  --ink-soft: #33455f;
+  --muted: #61718a;
+  --faint: #8e9bad;
+
+  --line: #c9d3e2;
+  --line-strong: #a5b3c8;
+
+  --accent: #1d4ed8;
+  --accent-deep: #16389c;
+  --accent-tint: #e4eaf9;
+  --accent-line: #a9bdec;
+  --on-accent: #ffffff;
+
+  --signal: #b45309;
+  --signal-tint: #fdf0dd;
+  --signal-line: #ecd3ab;
+
+  --slate: #0f766e;
+  --slate-deep: #0a544e;
+  --slate-tint: #e0f0ee;
+  --slate-line: #aed3ce;
+
+  --danger: #be2f2f;
+  --danger-tint: #fbe9e9;
+
+  --radius: 0px;
+  --radius-lg: 2px;
+  --shadow: 3px 3px 0 var(--line-strong);
+  --card-border: 1.5px solid var(--ink);
+}
+
+:root {
+  --font-sans: 'Pretendard Variable', Pretendard, -apple-system, 'Apple SD Gothic Neo', 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+/* ── 테마별 지면 질감 ──
+   색만으로는 구분이 약해서, 배경에 각 테마의 성격을 담은 결을 깐다. */
+
+/* EDITORIAL — 아주 옅은 종이 결 */
+:root[data-theme='editorial'] body,
+:root:not([data-theme]) body {
+  background-image: radial-gradient(rgba(120, 110, 90, 0.045) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+/* TERMINAL — 위쪽에서 은은하게 떨어지는 빛 */
+:root[data-theme='terminal'] body {
+  background-image: radial-gradient(120% 60% at 50% -10%, rgba(61, 220, 151, 0.07), transparent 70%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* BLUEPRINT — 모눈종이 격자 */
+:root[data-theme='blueprint'] body {
+  background-image:
+    linear-gradient(rgba(29, 78, 216, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 78, 216, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(29, 78, 216, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 78, 216, 0.09) 1px, transparent 1px);
+  background-size:
+    16px 16px,
+    16px 16px,
+    80px 80px,
+    80px 80px;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── 페이지 공통 인트로 ──
+   제목 왼쪽에 얇은 액센트 규칙을 세워 "문서의 시작"임을 표시한다. */
+
+.page-intro {
+  position: relative;
+  max-width: 780px;
+  margin-bottom: 44px;
+  padding-left: 18px;
+}
+
+.page-intro::before {
+  position: absolute;
+  top: 4px;
+  bottom: 6px;
+  left: 0;
+  width: 2px;
+  background: var(--accent);
+  content: '';
+}
+
+.page-intro h1 {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(32px, 4.4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.08;
+}
+
+.page-intro > p:last-child {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.page-intro strong {
+  color: var(--ink);
+  font-weight: 700;
+  box-shadow: inset 0 -0.5em 0 var(--accent-tint);
+}
+
+/* 메타 라벨 — 모노스페이스 대문자 */
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* 교안 쪽수처럼 부가 정보를 다는 작은 태그 */
+.slide {
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--muted);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+::selection {
+  background: var(--accent-tint);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   버튼 두 종류
+   ------------------------------------------------------------------
+   .glass-cta  기대되는 행동 — 로그인 화면의 '로그인', 포춘쿠키 열기.
+               그레이 → 초록 → 하늘을 옅게 흘려 유리처럼 비치게 한다.
+   .tint-cta   늘 떠 있는 자리 — 상단 내비의 '로그인'.
+               화면 어디서나 보이므로 색 하나만 옅게 깔고 조용히 둔다.
+
+   Element Plus 버튼에도 걸리도록 .el-button 을 함께 적어 특정도를 맞춘다.
+   ══════════════════════════════════════════════════════════════════ */
+.glass-cta,
+.el-button.glass-cta {
+  border: 1px solid rgb(255 255 255 / 0.5);
+  background: linear-gradient(
+    110deg,
+    rgb(122 132 138 / 0.42) 0%,
+    rgb(74 132 108 / 0.42) 38%,
+    rgb(96 148 176 / 0.44) 72%,
+    rgb(150 166 176 / 0.4) 100%
+  );
+  backdrop-filter: blur(8px) saturate(1.25);
+  -webkit-backdrop-filter: blur(8px) saturate(1.25);
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 1px 6px rgb(20 30 34 / 0.45);
+  box-shadow:
+    0 8px 22px rgb(60 90 90 / 0.22),
+    inset 0 1px 0 rgb(255 255 255 / 0.4);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 눌리기 직전에는 옅어지는 게 아니라 짙어져야 한다 (Element Plus 기본은 밝아진다) */
+.glass-cta:hover,
+.el-button.glass-cta:hover,
+.el-button.glass-cta:focus,
+.el-button.glass-cta:active {
+  border-color: rgb(255 255 255 / 0.6);
+  background: linear-gradient(
+    110deg,
+    rgb(92 102 108 / 0.68) 0%,
+    rgb(46 104 80 / 0.7) 38%,
+    rgb(62 116 146 / 0.72) 72%,
+    rgb(112 130 142 / 0.68) 100%
+  );
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow:
+    0 12px 28px rgb(40 70 70 / 0.32),
+    inset 0 1px 0 rgb(255 255 255 / 0.4);
+}
+
+/*
+ * 강조색(초록)은 '지금 여기'를 알리는 섹션 탭이 이미 쓰고 있다.
+ * 늘 떠 있는 로그인까지 초록이면 둘이 다툰다. 차분한 청회색으로 물러나 둔다.
+ */
+.tint-cta {
+  border: 1px solid color-mix(in srgb, var(--slate) 26%, transparent);
+  background: color-mix(in srgb, var(--slate) 11%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--slate);
+  font-weight: 700;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.tint-cta:hover {
+  border-color: color-mix(in srgb, var(--slate) 44%, transparent);
+  background: color-mix(in srgb, var(--slate) 20%, transparent);
+  color: var(--slate-deep);
+}

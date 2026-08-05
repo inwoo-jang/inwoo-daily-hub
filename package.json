@@ -1,0 +1,38 @@
+{
+  "name": "inwoo-daily-hub",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "api": "node mock-api/server.js",
+    "dev:all": "node scripts/dev-all.js",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && cp dist/index.html dist/404.html && touch dist/.nojekyll && npx --yes gh-pages@6 -d dist -b gh-pages --dotfiles -m \"deploy\"",
+    "lint": "eslint . --fix",
+    "lint:check": "eslint .",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@ant-design/icons-vue": "^7.0.1",
+    "axios": "^1.19.0",
+    "element-plus": "^2.14.3",
+    "pinia": "^4.0.2",
+    "vue": "^3.5.40",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/eslint-config-prettier": "^10.2.0",
+    "eslint": "^10.8.0",
+    "eslint-plugin-vue": "^10.10.0",
+    "globals": "^17.9.0",
+    "prettier": "^3.9.6",
+    "vite": "^8.1.5"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.12.0"
+  }
+}
