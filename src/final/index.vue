@@ -83,7 +83,9 @@ const logout = () => {
         <RouterLink :to="link('games')" :class="{ on: isGames }">게임</RouterLink>
         <RouterLink :to="link('records')" :class="{ on: isRecords }">My</RouterLink>
 
-        <code class="url">{{ route.path }}</code>
+        <!-- 첫 화면에서는 '/' 한 글자만 남아 부스러기처럼 보인다. 그때는 접는다 -->
+        <code v-if="route.path !== '/'" class="url">{{ route.path }}</code>
+        <span v-else class="url-gap" />
 
         <!-- 로그인했으면 이름과 로그아웃, 아니면 로그인 링크 -->
         <span v-if="isLoggedIn" class="who">
@@ -170,6 +172,11 @@ const logout = () => {
 .nav a.on:not(.sign) {
   color: var(--on-accent);
   background: var(--accent);
+}
+
+/* 주소가 접혔을 때도 로그인 버튼은 오른쪽 끝에 붙어 있어야 한다 */
+.url-gap {
+  margin-left: auto;
 }
 
 .url {
