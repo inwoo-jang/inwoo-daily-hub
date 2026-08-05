@@ -106,6 +106,13 @@ const preload = () => {
 onMounted(preload)
 watch(() => route.params.testId, preload)
 
+/** '86%' 처럼 퍼센트면 숫자만 꺼낸다. 아니면 null — 막대를 그리지 않는다 */
+const percentOf = (value) => {
+  const matched = String(value).match(/^(\d{1,3})\s*%$/)
+  if (!matched) return null
+  return Math.min(100, Number(matched[1]))
+}
+
 /** 이 테스트가 아닌 다른 테스트들 */
 const others = computed(() => tests.filter((item) => item.id !== route.params.testId))
 
@@ -156,8 +163,23 @@ const saveResult = async () => {
   }
 
   savedRecordId.value = saved.id
-  ElMessage.success({ message: '기록에 저장했어요!', duration: 1800 })
+  ElMessage.success({ message: 'My 에 저장했어요!', duration: 1600 })
 }
+
+/*
+ * 로그인해 있으면 알아서 남긴다 (운세와 같은 규칙).
+ * 결과를 보고 나서 저장 버튼을 또 눌러야 하는 것은 군더더기다.
+ * 이미 저장했거나 저장 중이면 건너뛴다.
+ */
+watch(
+  [outcome, isLoggedIn],
+  ([result, loggedIn]) => {
+    if (!result?.result || !loggedIn) return
+    if (savedRecordId.value || isSaving.value) return
+    saveResult()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -223,10 +245,19 @@ const saveResult = async () => {
             <li v-for="word in outcome.result.keywords" :key="word">#{{ word }}</li>
           </ul>
 
+          <!--
+            숫자 하나가 흰 상자에 덩그러니 놓이면 무슨 뜻인지 와닿지 않는다.
+            퍼센트는 채워진 막대로, 그 외 값은 그대로 크게 적는다.
+          -->
           <ul v-if="outcome.result.facts" class="stats">
-            <li v-for="fact in outcome.result.facts" :key="fact.label">
-              <b>{{ fact.value }}</b>
-              <small>{{ fact.label }}</small>
+            <li v-for="fact in outcome.result.facts" :key="fact.label" :class="{ gauge: percentOf(fact.value) !== null }">
+              <span class="stat-top">
+                <small>{{ fact.label }}</small>
+                <b>{{ fact.value }}</b>
+              </span>
+              <span v-if="percentOf(fact.value) !== null" class="stat-bar" aria-hidden="true">
+                <i :style="{ width: `${percentOf(fact.value)}%` }" />
+              </span>
             </li>
           </ul>
         </section>
@@ -252,12 +283,13 @@ const saveResult = async () => {
           </section>
         </div>
 
-        <!-- ④ 궁합 -->
+        <!-- ④ 궁합 — 이름만 적으면 "그래서 뭐" 가 된다. 왜 맞는지까지 -->
         <section class="match">
           <span class="match-face" aria-hidden="true">💞</span>
-          <span>
+          <span class="match-body">
             <small>이런 사람이랑 잘 맞아요</small>
-            <b>{{ outcome.result.match }}</b>
+            <b>{{ outcome.result.match.who }}</b>
+            <em v-if="outcome.result.match.why">{{ outcome.result.match.why }}</em>
           </span>
         </section>
 
@@ -285,17 +317,9 @@ const saveResult = async () => {
             {{ isMakingImage ? '만드는 중…' : '그림으로 저장' }}
           </button>
 
-          <button
-            v-if="isLoggedIn && !savedRecordId"
-            type="button"
-            class="save"
-            :disabled="isSaving"
-            @click="saveResult"
-          >
-            <span aria-hidden="true">💾</span> {{ isSaving ? '저장 중…' : 'My 에 저장' }}
-          </button>
-          <RouterLink v-else-if="savedRecordId" class="saved" :to="link('records')">
-            저장 완료 · My 에서 보기 →
+          <!-- 로그인해 있으면 알아서 저장된다. 저장된 뒤에는 보러 가는 길만 둔다 -->
+          <RouterLink v-if="savedRecordId" class="saved" :to="link('records')">
+            My 에서 보기 →
           </RouterLink>
           <RouterLink v-else class="saved ghost" :to="link('login')">
             로그인하고 저장하기
@@ -490,7 +514,12 @@ h3 {
   background:
     radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--tone) 26%, transparent), transparent 70%),
     linear-gradient(160deg, color-mix(in srgb, var(--tone) 14%, transparent), color-mix(in srgb, var(--tone) 4%, transparent));
-  overflow: hidden;
+  /*
+   * clip 은 넘치는 것만 자르고 자리는 그대로 잡아 준다.
+   * hidden 으로 두면 이 상자가 스크롤 컨테이너가 되어, 안에 든 것이 길어졌을 때
+   * 늘어나지 않고 아래가 잘린다 (생존 확률 막대가 잘려 보이던 이유).
+   */
+  overflow: clip;
   text-align: center;
 }
 
@@ -599,6 +628,7 @@ h4 {
   flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
+  width: 100%;
   margin: 8px 0 0;
   padding: 0;
   list-style: none;
@@ -606,11 +636,38 @@ h4 {
 
 .stats li {
   display: grid;
-  gap: 1px;
+  gap: 6px;
   min-width: 96px;
-  padding: 9px 16px;
+  padding: 10px 16px;
   border-radius: 16px;
-  background: #fff;
+  background: rgb(255 255 255 / 0.9);
+}
+
+.stats li.gauge {
+  min-width: 240px;
+}
+
+.stat-top {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.stat-bar {
+  display: block;
+  overflow: hidden;
+  height: 7px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+}
+
+.stat-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--tone);
+  transition: width 0.8s cubic-bezier(0.2, 0.8, 0.3, 1);
 }
 
 .stats b {
@@ -711,9 +768,16 @@ h4 {
 
 .match-face { font-size: 22px; }
 
-.match span {
+.match-body {
   display: grid;
-  gap: 2px;
+  gap: 3px;
+}
+
+.match em {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-style: normal;
+  line-height: 1.6;
 }
 
 .match small {

@@ -1,5 +1,6 @@
 <script setup>
-import { computed, nextTick, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import { CheckOutlined, CloseOutlined, EditFilled } from '@ant-design/icons-vue'
@@ -21,6 +22,8 @@ import { link } from '../routes'
  *   도는 중  : CSS animation 이 계속 돌린다 (끝을 정할 수 없으므로 transition 이 아니다)
  *   멈출 때  : 지금 각도를 읽어 그 자리에 붙인 뒤, transition 으로 목표까지 보낸다
  */
+const route = useRoute()
+
 const items = ref([...defaultSet.items])
 const activeSetId = ref(defaultSet.id)
 const draft = ref('')
@@ -239,6 +242,32 @@ const save = async () => {
   savedId.value = saved.id
   ElMessage.success({ message: 'My 에 저장했어요!', duration: 1600 })
 }
+
+/*
+ * 로그인해 있으면 알아서 남긴다 (운세·테스트와 같은 규칙).
+ * 결과가 나오는 순간 한 번만 — 같은 결과를 두 번 남기지 않는다.
+ */
+watch([winner, isLoggedIn], ([result, loggedIn]) => {
+  if (!result || !loggedIn || savedId.value || isSaving.value) return
+  save()
+})
+
+/*
+ * My 기록에서 "이 목록으로 다시" 를 누르면 그때 돌린 항목이 주소에 담겨 온다.
+ * 그대로 받아 채워 두면, 기록을 보다가 곧장 다시 돌릴 수 있다.
+ */
+onMounted(() => {
+  const raw = route.query.items
+  if (typeof raw !== 'string') return
+  try {
+    const list = JSON.parse(raw)
+    if (!Array.isArray(list) || list.length < MIN_ITEMS) return
+    items.value = list.map(String).slice(0, MAX_ITEMS)
+    activeSetId.value = ''
+  } catch {
+    // 주소가 잘못 붙어 온 경우 — 기본 세트로 그냥 시작한다
+  }
+})
 </script>
 
 <template>
@@ -316,19 +345,14 @@ const save = async () => {
             다시 돌리기
           </button>
 
-          <button
-            v-if="isLoggedIn && !savedId"
-            type="button"
-            class="save"
-            :disabled="isSaving"
-            @click="save"
-          >
-            {{ isSaving ? '저장 중…' : 'My 에 저장' }}
-          </button>
-          <RouterLink v-else-if="savedId" class="saved" :to="link('records')">
-            저장 완료 · My 에서 보기 →
+
+          <!-- 로그인해 있으면 알아서 저장된다 -->
+          <RouterLink v-if="savedId" class="saved" :to="link('records')">
+            My 에서 보기 →
           </RouterLink>
-          <RouterLink v-else class="saved ghost" :to="link('login')">로그인하고 저장</RouterLink>
+          <RouterLink v-else class="saved ghost" :to="link('login')">
+            로그인하면 기록에 남아요
+          </RouterLink>
         </div>
       </section>
 

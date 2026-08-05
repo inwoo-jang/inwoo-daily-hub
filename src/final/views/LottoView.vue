@@ -1,10 +1,11 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import BaseDashboardCard from '../../components/weather/BaseDashboardCard.vue'
 import { useAuthStore } from '../../stores/authStore'
 import { useRecordStore } from '../../stores/recordStore'
+import { downloadBlob, drawLottoCard } from '../utils/resultCard'
 import { link } from '../routes'
 
 /**
@@ -194,34 +195,71 @@ const letterOf = (index) => String.fromCharCode(65 + index) // A, B, C…
 const auth = useAuthStore()
 const { isLoggedIn } = storeToRefs(auth)
 const recordStore = useRecordStore()
-const { isSaving } = storeToRefs(recordStore)
 
 const savedId = ref(0)
 
-const save = async () => {
-  if (!sets.value.length || isDrawing.value) return
-  const result = sets.value
-    .map((set, i) => `${letterOf(i)} ${set.numbers.join('·')}`)
-    .join(' / ')
+/*
+ * 로그인해 있으면 한 세트가 다 나올 때마다 알아서 남긴다.
+ *
+ * 세트를 더 뽑을 때마다 전체를 다시 저장하면 같은 번호가 여러 번 쌓인다.
+ * 그래서 "방금 나온 한 세트"만 한 건으로 남긴다 — 기록에서 보기에도 그 편이 맞다.
+ */
+const savedCount = ref(0)
+
+watch([sets, isDrawing, isPending, isLoggedIn], () => {
+  if (!isLoggedIn.value || isDrawing.value || isPending.value) return
+  if (sets.value.length <= savedCount.value) {
+    // 지웠다면 센 값도 되돌린다
+    savedCount.value = sets.value.length
+    return
+  }
+  saveLatest()
+})
+
+const saveLatest = async () => {
+  const set = sets.value[sets.value.length - 1]
+  if (!set) return
+  const index = sets.value.length - 1
+  savedCount.value = sets.value.length
+
   const saved = await recordStore.add({
     kind: 'game',
     type: '로또 번호',
-    // 번호는 meta.result 에 있으니 여기서 또 늘어놓지 않는다
-    reading: `${sets.value.length}세트를 뽑았어요.`,
+    reading: `${letterOf(index)} 세트를 뽑았어요.`,
     meta: {
       gameId: 'lotto',
-      result,
-      lines: sets.value.map((set) => set.numbers),
-      bonus: sets.value.map((set) => set.bonus),
+      result: set.numbers.join('·'),
+      lines: [set.numbers],
+      bonus: [set.bonus],
     },
   })
   if (!saved) {
-    ElMessage.error(recordStore.errorMessage)
+    savedCount.value = index // 실패했으면 다음에 다시 시도한다
     return
   }
   savedId.value = saved.id
-  ElMessage.success({ message: 'My 에 저장했어요!', duration: 1600 })
 }
+
+/* 뽑은 번호를 그림 한 장으로 */
+const isMakingImage = ref(false)
+
+const saveImage = async () => {
+  if (!sets.value.length || isMakingImage.value) return
+  isMakingImage.value = true
+  try {
+    const blob = await drawLottoCard({
+      sets: sets.value.map((set, i) => ({ letter: letterOf(i), ...set })),
+    })
+    if (!blob) throw new Error('no blob')
+    downloadBlob(blob, `로또번호_${new Date().toLocaleDateString('ko-KR')}.png`)
+    ElMessage.success({ message: '그림으로 저장했어요!', duration: 1600 })
+  } catch {
+    ElMessage.error('그림을 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.')
+  } finally {
+    isMakingImage.value = false
+  }
+}
+
 </script>
 
 <template>
@@ -340,19 +378,17 @@ const save = async () => {
         <p class="hint">마지막 한 칸은 보너스 번호예요.</p>
 
         <div v-if="!isDrawing && !isPending" class="result-acts">
-          <button
-            v-if="isLoggedIn && !savedId"
-            type="button"
-            class="save"
-            :disabled="isSaving || isDrawing"
-            @click="save"
-          >
-            {{ isSaving ? '저장 중…' : 'My 에 저장' }}
+          <button type="button" class="save" :disabled="isMakingImage" @click="saveImage">
+            {{ isMakingImage ? '만드는 중…' : '그림으로 저장' }}
           </button>
-          <RouterLink v-else-if="savedId" class="saved" :to="link('records')">
-            저장 완료 · My 에서 보기 →
+
+          <!-- 로그인해 있으면 알아서 저장된다. 아니면 로그인 안내만 -->
+          <RouterLink v-if="savedId" class="saved" :to="link('records')">
+            My 에서 보기 →
           </RouterLink>
-          <RouterLink v-else class="saved ghost" :to="link('login')">로그인하고 저장</RouterLink>
+          <RouterLink v-else-if="!isLoggedIn" class="saved ghost" :to="link('login')">
+            로그인하면 기록에 남아요
+          </RouterLink>
         </div>
       </section>
 

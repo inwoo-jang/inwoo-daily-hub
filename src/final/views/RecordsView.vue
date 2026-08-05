@@ -95,7 +95,9 @@ const confirmRemove = async (record) => {
 }
 
 /* ── 표시용 ─────────────────────────────────────────────────────── */
+/* 며칠 전 기록인지 헷갈리지 않게 연도까지 적는다 */
 const dateFormatter = new Intl.DateTimeFormat('ko-KR', {
+  year: 'numeric',
   month: 'long',
   day: 'numeric',
   hour: '2-digit',
@@ -190,6 +192,15 @@ onMounted(() => store.load())
           <p v-else-if="record.kind === 'game' && record.meta" class="game-result">
             <b>{{ record.meta.result }}</b>
             <small v-if="record.meta.items?.length">{{ record.meta.items.length }}개 중에서</small>
+
+            <!-- 그때 돌린 항목 그대로 다시 돌려 볼 수 있게 -->
+            <RouterLink
+              v-if="record.meta.gameId === 'roulette' && record.meta.items?.length"
+              class="replay"
+              :to="link('roulette', {}, { items: JSON.stringify(record.meta.items) })"
+            >
+              이 목록으로 다시 →
+            </RouterLink>
           </p>
 
           <!-- ③ 운세 — 뽑은 카드 -->
@@ -354,6 +365,20 @@ h3 {
 .game-result small {
   color: var(--faint);
   font-size: 11.5px;
+}
+
+.replay {
+  padding: 4px 11px;
+  border-radius: 999px;
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.replay:hover {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .row {

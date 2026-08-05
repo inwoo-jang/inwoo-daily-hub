@@ -403,14 +403,31 @@ const humidity = computed(() => HUMIDITY_BANDS.find((b) => props.cityItem.humidi
 }
 
 /* 좁아지면 수치 덩어리를 아래로 내린다 */
-@media (max-width: 520px) {
+@media (max-width: 720px) {
   .weather-card {
     grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: 8px;
+    margin-bottom: 7px;
+    padding: 9px 11px;
   }
 
   .metrics {
     grid-column: 1 / -1;
     grid-template-columns: repeat(2, max-content);
+  }
+
+  .icon-tile {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .metrics {
+    gap: 5px;
+  }
+
+  .metric {
+    padding: 3px 9px 3px 7px;
   }
 }
 </style>

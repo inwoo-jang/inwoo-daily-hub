@@ -289,6 +289,195 @@ export const drawResultCard = async ({ test, result }) => {
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
 }
 
+/**
+ * 포춘쿠키 한 줄을 카드로 그린다.
+ *
+ * 결과 카드와 같은 규칙(잰 뒤에 그린다 · 좌표는 기준 크기)으로 만들되,
+ * 여기는 담을 것이 한 줄뿐이라 글자를 크게 놓고 여백을 넉넉히 둔다.
+ *
+ * @param {object} options
+ * @param {string} options.message 오늘의 한 줄
+ * @param {string} options.image   열린 쿠키 사진 주소
+ */
+export const drawFortuneCard = async ({ message, image }) => {
+  await document.fonts?.ready
+
+  const tone = '#5e8a72'
+  const measure = document.createElement('canvas').getContext('2d')
+  measure.font = `700 30px ${SANS}`
+  const lines = wrap(measure, message, W - PAD * 2 - 40)
+
+  const cookieH = 200
+  const H = Math.round(96 + cookieH + 56 + lines.length * 44 + 84)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = W * SCALE
+  canvas.height = H * SCALE
+  const ctx = canvas.getContext('2d')
+  ctx.scale(SCALE, SCALE)
+  const center = W / 2
+
+  /* 바탕 — 종이 위에 얹힌 느낌으로 */
+  ctx.fillStyle = '#fbf7ef'
+  ctx.fillRect(0, 0, W, H)
+  const band = ctx.createLinearGradient(0, 0, 0, H)
+  band.addColorStop(0, withAlpha(tone, 0.16))
+  band.addColorStop(0.6, withAlpha(tone, 0))
+  ctx.fillStyle = band
+  ctx.fillRect(0, 0, W, H)
+
+  ctx.fillStyle = withAlpha(tone, 0.07)
+  ctx.beginPath()
+  ctx.arc(W + 30, H - 60, 190, 0, Math.PI * 2)
+  ctx.fill()
+
+  /* 머리말 */
+  ctx.textAlign = 'center'
+  ctx.fillStyle = withAlpha(tone, 0.95)
+  ctx.font = `700 19px ${SANS}`
+  ctx.fillText("TODAY'S FORTUNE", center, 62)
+
+  /* 쿠키 */
+  const cookie = await loadImage(image)
+  if (cookie) {
+    const w = Math.min(W - PAD * 2, (cookie.width / cookie.height) * cookieH)
+    const h = (cookie.height / cookie.width) * w
+    ctx.save()
+    ctx.shadowColor = 'rgba(90, 78, 60, 0.28)'
+    ctx.shadowBlur = 26
+    ctx.shadowOffsetY = 12
+    ctx.drawImage(cookie, center - w / 2, 96, w, h)
+    ctx.restore()
+  }
+
+  /* 한 줄 */
+  let y = 96 + cookieH + 62
+  ctx.fillStyle = '#2b2f36'
+  ctx.font = `700 30px ${SANS}`
+  for (const line of lines) {
+    ctx.fillText(line, center, y)
+    y += 44
+  }
+
+  /* 꼬리말 */
+  ctx.fillStyle = 'rgba(120, 126, 136, 0.9)'
+  ctx.font = `600 14px ${SANS}`
+  ctx.fillText('Daily Hub', center, H - 52)
+  ctx.fillStyle = 'rgba(150, 155, 164, 0.9)'
+  ctx.font = `500 13px ${SANS}`
+  ctx.fillText(
+    new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }),
+    center,
+    H - 28,
+  )
+
+  return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
+}
+
+/** 로또 공 색 — 화면과 같은 구간을 쓴다 */
+const lottoTone = (n) => {
+  if (n <= 10) return '#f5bf35'
+  if (n <= 20) return '#3d8fdd'
+  if (n <= 30) return '#e8564c'
+  if (n <= 40) return '#4b525c'
+  return '#3fa870'
+}
+
+/**
+ * 뽑은 로또 번호를 카드로 그린다.
+ *
+ * @param {object} options
+ * @param {Array<{letter: string, numbers: number[], bonus: number}>} options.sets
+ */
+export const drawLottoCard = async ({ sets }) => {
+  await document.fonts?.ready
+
+  const rowH = 74
+  const H = Math.round(120 + sets.length * rowH + 96)
+
+  const canvas = document.createElement('canvas')
+  canvas.width = W * SCALE
+  canvas.height = H * SCALE
+  const ctx = canvas.getContext('2d')
+  ctx.scale(SCALE, SCALE)
+  const center = W / 2
+
+  /* 바탕 */
+  ctx.fillStyle = '#fbfaf7'
+  ctx.fillRect(0, 0, W, H)
+  const band = ctx.createLinearGradient(0, 0, 0, H * 0.5)
+  band.addColorStop(0, 'rgba(61, 143, 221, 0.16)')
+  band.addColorStop(1, 'rgba(61, 143, 221, 0)')
+  ctx.fillStyle = band
+  ctx.fillRect(0, 0, W, H * 0.5)
+
+  /* 머리말 */
+  ctx.textAlign = 'center'
+  ctx.fillStyle = 'rgba(61, 110, 160, 0.95)'
+  ctx.font = `700 20px ${SANS}`
+  ctx.fillText('오늘의 로또 번호', center, 62)
+
+  /* 세트 */
+  const R = 23
+  const gap = 12
+  let y = 118
+
+  for (const set of sets) {
+    const balls = [...set.numbers, set.bonus]
+    const totalW = balls.length * (R * 2) + (balls.length - 1) * gap + 40
+    let x = center - totalW / 2 + 40
+
+    // 세트 이름
+    ctx.textAlign = 'left'
+    ctx.fillStyle = 'rgba(110, 118, 128, 0.9)'
+    ctx.font = `700 16px ${SANS}`
+    ctx.fillText(set.letter, center - totalW / 2, y + 6)
+
+    balls.forEach((n, i) => {
+      const isBonus = i === balls.length - 1
+      if (isBonus) {
+        // 보너스 앞에는 + 를 하나 둔다
+        ctx.textAlign = 'center'
+        ctx.fillStyle = 'rgba(150, 156, 166, 0.9)'
+        ctx.font = `700 16px ${SANS}`
+        ctx.fillText('+', x - gap / 2 - 1, y + 6)
+      }
+
+      const r = isBonus ? R - 4 : R
+      ctx.beginPath()
+      ctx.arc(x + R, y, r, 0, Math.PI * 2)
+      ctx.fillStyle = lottoTone(n)
+      ctx.fill()
+
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      ctx.fillStyle = '#fff'
+      ctx.font = `800 ${isBonus ? 15 : 17}px ${SANS}`
+      ctx.fillText(String(n), x + R, y + 1)
+      ctx.textBaseline = 'alphabetic'
+
+      x += R * 2 + gap
+    })
+
+    y += rowH
+  }
+
+  /* 꼬리말 */
+  ctx.textAlign = 'center'
+  ctx.fillStyle = 'rgba(120, 126, 136, 0.9)'
+  ctx.font = `600 14px ${SANS}`
+  ctx.fillText('Daily Hub', center, H - 52)
+  ctx.fillStyle = 'rgba(150, 155, 164, 0.9)'
+  ctx.font = `500 13px ${SANS}`
+  ctx.fillText(
+    new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' }),
+    center,
+    H - 28,
+  )
+
+  return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
+}
+
 /** 만든 그림을 내려받게 한다 */
 export const downloadBlob = (blob, filename) => {
   const url = URL.createObjectURL(blob)

@@ -1,266 +1,263 @@
 <script setup>
+import BaseDashboardCard from '../components/weather/BaseDashboardCard.vue'
 import { currentTheme, setTheme, THEMES } from '../utils/theme'
+
+/**
+ * 환경 설정 — /settings
+ *
+ * 고를 것은 테마 하나뿐이다. 그래서 설명을 길게 쓰기보다,
+ * 고르면 어떤 화면이 되는지 작은 그림으로 바로 보여 준다.
+ * 미리보기는 이 앱의 실제 모습(메뉴 알약 + 카드)을 그대로 축소한 것이다.
+ */
 </script>
 
 <template>
-  <section class="page-intro">
-    <p class="eyebrow">SETTINGS</p>
-    <h1>환경 설정</h1>
-    <p>
-      화면 테마를 고를 수 있습니다. 고른 테마는 <strong>이 브라우저에 저장</strong>되어 다음에
-      열어도 그대로 유지됩니다.
-    </p>
-  </section>
+  <BaseDashboardCard>
+    <div class="settings">
+      <header class="head">
+        <p class="eyebrow">SETTINGS</p>
+        <h3>환경 설정</h3>
+        <p class="lead">
+          고른 테마는 <b>이 브라우저에 저장</b>되어 다음에 열어도 그대로 유지됩니다.
+        </p>
+      </header>
 
-  <section class="block">
-    <div class="block-head">
-      <p class="eyebrow">APPEARANCE</p>
-      <h2>테마</h2>
-      <p class="block-desc">누르면 바로 적용됩니다. 실습 화면의 색은 각 실습 코드가 정한 대로 유지됩니다.</p>
+      <section class="block">
+        <p class="section-label">화면 테마</p>
+
+        <div class="theme-grid">
+          <button
+            v-for="theme in THEMES"
+            :key="theme.id"
+            type="button"
+            class="theme-card"
+            :class="{ active: currentTheme === theme.id }"
+            :aria-pressed="currentTheme === theme.id"
+            @click="setTheme(theme.id)"
+          >
+            <!-- 그 테마의 색으로 이 앱 화면을 작게 그려 둔다 -->
+            <span class="preview" :style="{ background: theme.swatches[0] }" aria-hidden="true">
+              <span class="p-nav" :style="{ background: theme.swatches[1] }">
+                <i class="p-tab on" :style="{ background: theme.swatches[2] }" />
+                <i class="p-tab" :style="{ background: theme.swatches[3], opacity: 0.22 }" />
+                <i class="p-tab" :style="{ background: theme.swatches[3], opacity: 0.22 }" />
+              </span>
+
+              <span class="p-card" :style="{ background: theme.swatches[1] }">
+                <i class="p-line" :style="{ background: theme.swatches[3], opacity: 0.8 }" />
+                <i class="p-line short" :style="{ background: theme.swatches[3], opacity: 0.32 }" />
+                <i class="p-dot" :style="{ background: theme.swatches[2] }" />
+              </span>
+            </span>
+
+            <span class="meta">
+              <span class="name-row">
+                <b>{{ theme.name }}</b>
+                <small>{{ theme.tagline }}</small>
+                <span v-if="currentTheme === theme.id" class="badge">사용 중</span>
+              </span>
+              <span class="desc">{{ theme.description }}</span>
+            </span>
+          </button>
+        </div>
+      </section>
+
+      <section class="block">
+        <p class="section-label">이 사이트</p>
+        <dl class="facts">
+          <dt>이름</dt>
+          <dd>Daily Hub — 오늘 하루를 가볍게 시작하는 대시보드</dd>
+          <dt>담긴 것</dt>
+          <dd>날씨 · 운세 · 심리테스트 · 게임 · 내 기록</dd>
+          <dt>만든 것</dt>
+          <dd>Vue 3 · Vue Router · Pinia · Axios · Element Plus</dd>
+          <dt>기록</dt>
+          <dd>로그인한 브라우저에만 남고 서버로 나가지 않습니다</dd>
+        </dl>
+      </section>
     </div>
-
-    <div class="theme-grid">
-      <button
-        v-for="theme in THEMES"
-        :key="theme.id"
-        type="button"
-        class="theme-card"
-        :class="{ active: currentTheme === theme.id }"
-        :aria-pressed="currentTheme === theme.id"
-        @click="setTheme(theme.id)"
-      >
-        <!-- 실제 색을 그대로 보여주는 미리보기 -->
-        <span
-          class="preview"
-          :style="{ background: theme.swatches[0], borderColor: theme.swatches[3] + '22' }"
-        >
-          <i class="bar" :style="{ background: theme.swatches[1] }">
-            <em :style="{ background: theme.swatches[2] }"></em>
-          </i>
-          <i class="line long" :style="{ background: theme.swatches[3], opacity: 0.85 }"></i>
-          <i class="line" :style="{ background: theme.swatches[3], opacity: 0.35 }"></i>
-          <i class="line mid" :style="{ background: theme.swatches[3], opacity: 0.35 }"></i>
-          <i class="chip" :style="{ background: theme.swatches[2] }"></i>
-        </span>
-
-        <span class="meta">
-          <span class="name-row">
-            <b>{{ theme.name }}</b>
-            <small>{{ theme.tagline }}</small>
-            <span v-if="currentTheme === theme.id" class="badge">사용 중</span>
-          </span>
-          <span class="desc">{{ theme.description }}</span>
-        </span>
-      </button>
-    </div>
-  </section>
-
-  <section class="block">
-    <div class="block-head">
-      <p class="eyebrow">ABOUT</p>
-      <h2>이 사이트</h2>
-    </div>
-    <dl class="facts">
-      <dt>구성</dt>
-      <dd>학습 &amp; 코드 챌린지 · 제출 과제 · 단계별 결과물 · 최종 결과물</dd>
-      <dt>내용 출처</dt>
-      <dd>Full-stack Engineering · Frontend Framework (Vue.js) 교안 276쪽</dd>
-      <dt>내용 추가</dt>
-      <dd><code>src/data/curriculum.js</code> 한 파일만 고치면 모든 화면에 반영됩니다</dd>
-      <dt>가이드</dt>
-      <dd><code>docs/CONTENT_GUIDE.md</code></dd>
-    </dl>
-  </section>
+  </BaseDashboardCard>
 </template>
 
 <style scoped>
-.block {
-  margin-bottom: 44px;
+.settings {
+  display: grid;
+  gap: 20px;
 }
 
-.block-head {
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
-  margin-bottom: 20px;
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--slate);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
 }
 
-h2 {
+h3 {
   margin: 0;
   color: var(--ink);
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
+  font-size: 20px;
 }
 
-.block-desc {
-  margin: 8px 0 0;
+.lead {
+  margin: 6px 0 0;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.7;
 }
 
-/* 테마 카드 */
+.lead b {
+  color: var(--ink-soft);
+}
+
+.section-label {
+  margin: 0 0 10px;
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── 테마 고르기 ── */
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
 }
 
 .theme-card {
   display: grid;
-  gap: 14px;
-  padding: 14px;
-  border: var(--card-border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow);
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel-strong);
   cursor: pointer;
+  font: inherit;
   text-align: left;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .theme-card:hover {
-  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgb(40 46 56 / 0.1);
 }
 
 .theme-card.active {
   border-color: var(--accent);
-  box-shadow:
-    var(--shadow),
-    inset 0 0 0 1px var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
-/* 미리보기 — 각 테마의 실제 색으로 미니 화면을 그린다 */
+/* ── 미리보기 (이 앱 화면을 축소한 그림) ── */
 .preview {
-  display: block;
-  height: 108px;
-  padding: 10px;
-  overflow: hidden;
-  border: 1px solid;
-  border-radius: var(--radius);
+  display: grid;
+  gap: 7px;
+  padding: 9px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
 }
 
-.preview .bar {
+.p-nav {
   display: flex;
-  align-items: center;
-  height: 20px;
-  margin-bottom: 12px;
-  padding: 0 7px;
-  border-radius: calc(var(--radius) - 2px);
+  gap: 4px;
+  padding: 4px;
+  border-radius: 99px;
 }
 
-.preview .bar em {
-  display: block;
-  width: 22px;
-  height: 6px;
-  border-radius: 3px;
-}
-
-.preview .line {
-  display: block;
-  height: 6px;
-  margin-bottom: 7px;
-  border-radius: 3px;
-}
-
-.preview .line.long {
-  width: 78%;
+.p-tab {
+  flex: 1;
   height: 9px;
+  border-radius: 99px;
 }
 
-.preview .line.mid {
-  width: 55%;
-}
-
-.preview .chip {
-  display: block;
-  width: 42px;
-  height: 14px;
-  border-radius: calc(var(--radius) - 1px);
-}
-
-/* 설명 */
-.meta {
+.p-card {
   display: grid;
   gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.p-line {
+  width: 100%;
+  height: 6px;
+  border-radius: 99px;
+}
+
+.p-line.short {
+  width: 58%;
+}
+
+.p-dot {
+  width: 22px;
+  height: 8px;
+  border-radius: 99px;
+}
+
+/* ── 설명 ── */
+.meta {
+  display: grid;
+  gap: 4px;
 }
 
 .name-row {
   display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   align-items: baseline;
-  gap: 8px;
 }
 
 .name-row b {
   color: var(--ink);
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+  font-size: 14.5px;
+  font-weight: 700;
 }
 
 .name-row small {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: 11px;
+  color: var(--faint);
+  font-size: 11.5px;
 }
 
 .badge {
-  margin-left: auto;
   padding: 2px 8px;
-  border-radius: 20px;
-  color: var(--on-accent);
-  background: var(--accent);
+  border-radius: 999px;
+  background: var(--accent-tint);
+  color: var(--accent);
   font-size: 10.5px;
-  font-weight: 800;
-  white-space: nowrap;
+  font-weight: 700;
 }
 
 .desc {
   color: var(--muted);
   font-size: 12.5px;
-  line-height: 1.7;
-}
-
-/* 정보 목록 */
-.facts {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 10px 22px;
-  margin: 0;
-}
-
-dt {
-  color: var(--faint);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-dd {
-  margin: 0;
-  color: var(--ink-soft);
-  font-size: 13.5px;
   line-height: 1.6;
 }
 
-code {
-  padding: 1px 6px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  color: var(--accent);
-  background: var(--surface);
-  font-family: var(--font-mono);
-  font-size: 12px;
+/* ── 이 사이트 ── */
+.facts {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 0;
 }
 
-@media (max-width: 520px) {
-  .facts {
-    grid-template-columns: 1fr;
-    gap: 3px 0;
-  }
+.facts dt {
+  color: var(--faint);
+  font-size: 12.5px;
+  font-weight: 700;
+}
 
-  dd {
-    margin-bottom: 12px;
+.facts dd {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-card:hover {
+    transform: none;
   }
 }
 </style>

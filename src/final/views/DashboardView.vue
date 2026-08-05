@@ -494,8 +494,14 @@ const showDetail = (cityName) => {
 
 <style scoped>
 /* 판의 너비는 껍데기(index.vue)가 잡는다 — 홈 · 소개 · 상세가 전부 같은 폭이다 */
+/*
+ * minmax(0, 1fr) 이 없으면 안 되는 이유 —
+ * grid 칸은 기본이 min-width: auto 라, 옆으로 굴리는 지역 탭처럼 안쪽이
+ * 넓은 내용이 들어오면 칸이 그만큼 벌어져 카드가 화면 밖으로 나간다.
+ */
 .dashboard-wrapper {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 12px;
 }
 
@@ -861,5 +867,25 @@ const showDetail = (cityName) => {
 .stage-body:has(.dashboard-wrapper),
 .result-stage:has(.dashboard-wrapper) {
   position: relative;
+}
+
+/*
+ * 좁은 화면 — 목록을 보러 온 사람에게 목록을 먼저 준다.
+ * 검색칸 제목과 큰 여백부터 줄이고, 보기 전환·상태 줄도 한 단계 낮춘다.
+ */
+@media (max-width: 720px) {
+  .card-title {
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+
+  .dashboard-wrapper :deep(.el-input__wrapper) {
+    padding: 2px 10px;
+  }
+
+  .dashboard-wrapper :deep(.el-input--large .el-input__inner) {
+    height: 36px;
+    font-size: 14px;
+  }
 }
 </style>

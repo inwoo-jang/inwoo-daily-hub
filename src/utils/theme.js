@@ -8,25 +8,29 @@
 import { ref } from 'vue'
 
 export const THEMES = [
+  /*
+   * id 는 그대로 둔다 — 이미 저장해 둔 값이 있는 사람의 설정이 풀리지 않도록.
+   * 보이는 이름과 색만 이 앱에 맞게 고쳤다.
+   */
   {
     id: 'editorial',
-    name: 'Editorial',
-    tagline: '기술 문서',
-    description: '따뜻한 종이 위에 근접 블랙으로 찍은 인쇄물. 색을 아끼고 여백으로 읽힙니다.',
+    name: '데이라이트',
+    tagline: '기본',
+    description: '따뜻한 종이 위의 초록. 날씨 배경이 가장 잘 비치는 기본 화면입니다.',
     swatches: ['#f6f4ef', '#fffefb', '#0f7a4e', '#16191c'],
   },
   {
     id: 'terminal',
-    name: 'Terminal',
-    tagline: '다크 IDE',
-    description: '코드를 오래 보는 화면. 저조도 배경에 형광 민트로 눌러야 할 곳만 밝힙니다.',
-    swatches: ['#14181f', '#1b212b', '#3ddc97', '#e8edf4'],
+    name: '나이트',
+    tagline: '어두운 화면',
+    description: '밤에 보기 편한 짙은 화면. 같은 초록을 밝기만 올려 낮과 같은 얼굴을 유지합니다.',
+    swatches: ['#1a1f27', '#242b35', '#4fae7e', '#eef1f5'],
   },
   {
     id: 'blueprint',
-    name: 'Blueprint',
-    tagline: '설계도',
-    description: '모눈종이 위의 도면. 차가운 청색과 각진 모서리로 구조를 드러냅니다.',
+    name: '스카이',
+    tagline: '맑은 하늘',
+    description: '차갑고 맑은 청색. 하늘 배경과 같은 결로 화면 전체를 파랗게 맞춥니다.',
     swatches: ['#eef1f6', '#ffffff', '#1d4ed8', '#12213a'],
   },
 ]

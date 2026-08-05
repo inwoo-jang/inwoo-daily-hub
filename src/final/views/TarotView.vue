@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import { cardBack, tarotCards } from '../data/tarotCards'
@@ -182,6 +182,25 @@ const saveReading = async () => {
   ElMessage.success({ message: '운세를 기록했습니다.', duration: 1800 })
 }
 
+/*
+ * 로그인해 있으면 알아서 남긴다.
+ *
+ * 세 장을 다 뽑고 해석까지 본 사람이 "기록하기"를 한 번 더 눌러야 남는 것은
+ * 군더더기다. 로그인은 이미 "내 것으로 모으겠다"는 뜻이므로, 해석이 갖춰지는
+ * 순간 조용히 저장한다. 버튼은 로그인하지 않은 사람에게만 뜬다.
+ *
+ * 이미 저장했거나 저장 중이면 건너뛴다 — 탭을 옮길 때마다 또 남으면 안 된다.
+ */
+watch(
+  [isComplete, readingText, isLoggedIn],
+  ([complete, text, loggedIn]) => {
+    if (!complete || !loggedIn) return
+    if (!text.trim() || savedRecordId.value || isSaving.value) return
+    saveReading()
+  },
+  { immediate: true },
+)
+
 const chooseCard = (card) => {
   if (isShuffling.value || isComplete.value) return
   if (pickedIds.value.has(card.id)) return
@@ -330,19 +349,15 @@ const drawAgain = () => {
 
         <template v-else-if="savedRecordId">
           <p class="save-hint done">
-            기록했습니다.
             <RouterLink :to="link('records')">My 에서 보기 →</RouterLink>
           </p>
         </template>
 
         <template v-else>
-          <!-- 종류를 다시 고르게 하지 않는다. 지금 보고 있는 탭이 곧 그 종류다 -->
+          <!-- 로그인해 있으면 알아서 저장된다. 그 사이의 짧은 순간만 이 줄이 보인다 -->
           <p class="save-hint">
-            <b>{{ activeType }}</b> 으로 남깁니다.
+            <b>{{ activeType }}</b> 으로 남기는 중…
           </p>
-          <button type="button" class="save-button" :disabled="isSaving" @click="saveReading">
-            {{ isSaving ? '남기는 중…' : '이 운세 기록하기' }}
-          </button>
         </template>
       </div>
     </section>
@@ -587,9 +602,16 @@ h2 { font-size: 24px; line-height: 1.25; }
 .kind-tabs button small { color: var(--faint); font-size: 11px; font-weight: 500; }
 .kind-tabs button:hover { background: color-mix(in srgb, var(--mystic) 7%, transparent); color: var(--mystic); }
 
-/* 고른 탭 — 원색으로 채우지 않고 옅은 색을 깔아 '지금 여기'만 알린다 */
-.kind-tabs button.on { border-radius: 14px 14px 0 0; background: linear-gradient(180deg, color-mix(in srgb, var(--mystic) 20%, transparent), color-mix(in srgb, var(--mystic) 6%, transparent)); color: var(--mystic-deep); box-shadow: inset 0 -2px 0 var(--mystic); }
-.kind-tabs button.on small { color: var(--mystic); }
+/*
+ * 고른 탭 — 채워서 알린다.
+ *
+ * 옅은 보라만 깔아 두었더니 안 고른 탭과 구별이 잘 안 됐다.
+ * 이 앱은 '지금 여기'를 늘 채워서 알린다(위 메뉴의 초록 탭). 같은 말투로,
+ * 다만 초록 대신 이 화면의 보라로 채운다. 위아래 두 톤을 섞어 납작하지 않게.
+ */
+.kind-tabs button.on { border-radius: 14px 14px 0 0; background: linear-gradient(170deg, #7b6ba0, var(--mystic-deep)); color: #fff; box-shadow: 0 4px 12px color-mix(in srgb, var(--mystic-deep) 30%, transparent); }
+.kind-tabs button.on small { color: rgb(255 255 255 / 0.78); }
+.kind-tabs button.on:hover { background: linear-gradient(170deg, #7b6ba0, var(--mystic-deep)); color: #fff; }
 
 
 /* ── 기록 남기기 ── */

@@ -83,4 +83,32 @@ defineEmits(['select-region'])
   background: rgb(255 255 255 / 25%);
   color: var(--on-accent);
 }
+
+/*
+ * 좁은 화면에서는 지역 칩이 네 줄까지 쌓여 화면 절반을 먹는다.
+ * 한 줄로 두고 옆으로 굴리게 한다 — 목록을 보러 온 사람에게는
+ * 지역 고르는 칸보다 목록이 먼저 보여야 한다.
+ */
+@media (max-width: 720px) {
+  .tabs {
+    /* 옆으로 굴릴 때는 폭을 못박아 둬야 부모를 밀어내지 않는다 */
+    max-width: 100%;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-bottom: 10px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    flex: none;
+    padding: 6px 11px;
+    font-size: 12.5px;
+  }
+}
 </style>

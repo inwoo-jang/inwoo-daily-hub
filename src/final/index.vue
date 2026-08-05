@@ -16,7 +16,7 @@ import { computed, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
-import logoMark from '../assets/logo-mark.png'
+import CloverMark from './components/CloverMark.vue'
 import UiIcon from '../components/weather/UiIcon.vue'
 import WeatherBackdrop from '../components/weather/WeatherBackdrop.vue'
 import { useAuthStore } from '../stores/authStore'
@@ -88,7 +88,7 @@ const logout = () => {
         하나의 그림으로 두면 사이 간격도 글자 크기도 손댈 수 없다.
       -->
       <RouterLink class="brand" :to="link('home')">
-        <img :src="logoMark" alt="" aria-hidden="true" />
+        <CloverMark :size="30" />
         <span>Daily Hub</span>
       </RouterLink>
 
@@ -240,7 +240,7 @@ const logout = () => {
   overflow-y: auto;
   overscroll-behavior: contain;
   /* 배경 날씨가 판 위아래로 보이도록 숨 쉴 자리를 둔다 */
-  padding: 12px 0 34px;
+  padding: 10px 0 16px;
   display: grid;
   /*
    * minmax(0, 1fr) 이 없으면 안 되는 이유 —
@@ -253,20 +253,47 @@ const logout = () => {
   gap: 12px;
 }
 
-/* 스크롤 막대는 얇게. 판 위에 굵은 막대가 서면 눈에 먼저 들어온다 */
-.column::-webkit-scrollbar {
-  width: 8px;
+/*
+ * 스크롤 막대는 평소엔 숨고, 마우스를 올리면 흰 막대가 뜬다.
+ *
+ * 폭은 늘 잡아 두고 색만 투명 ↔ 흰색으로 바꾼다. 폭을 0 에서 키우면
+ * 그때마다 안쪽 내용이 밀려 글자가 흔들린다.
+ */
+.column {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.25s ease;
 }
 
-.column::-webkit-scrollbar-thumb {
-  border: 2px solid transparent;
-  border-radius: 99px;
-  background: rgb(80 92 108 / 0.28);
-  background-clip: content-box;
+.column:hover,
+.column:focus-within {
+  scrollbar-color: rgb(255 255 255 / 0.55) transparent;
+}
+
+.column::-webkit-scrollbar {
+  width: 10px;
 }
 
 .column::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.column::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 99px;
+  background: transparent;
+  background-clip: content-box;
+  transition: background 0.25s ease;
+}
+
+.column:hover::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.6);
+  background-clip: content-box;
+}
+
+.column:hover::-webkit-scrollbar-thumb:hover {
+  background: rgb(255 255 255 / 0.85);
+  background-clip: content-box;
 }
 
 .nav {
@@ -317,16 +344,15 @@ const logout = () => {
  */
 .brand {
   display: inline-flex;
-  gap: 11px;
+  gap: 9px;
   align-items: center;
   color: #fff;
   text-decoration: none;
 }
 
-.brand img {
-  display: block;
-  height: 30px;
-  filter: drop-shadow(0 1px 3px rgb(20 30 45 / 0.4));
+/* 마크는 글자와 같은 색(흰색)을 물려받는다 */
+.brand :deep(.clover) {
+  filter: drop-shadow(0 1px 3px rgb(20 30 45 / 0.38));
 }
 
 .brand span {
@@ -454,7 +480,8 @@ const logout = () => {
     padding: 10px 12px 8px;
   }
 
-  .brand img {
+  .brand :deep(.clover) {
+    width: 25px;
     height: 25px;
   }
 

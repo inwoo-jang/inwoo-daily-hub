@@ -77,39 +77,41 @@
    ══════════════════════════════════════════════════════════════════ */
 
 :root[data-theme='terminal'] {
-  --paper: #14181f;
-  --surface: #1b212b;
-  --surface-sunken: #232b37;
+  --paper: #1a1f27;
+  --surface: #242b35;
+  --surface-sunken: #2d3542;
 
-  --ink: #e8edf4;
-  --ink-soft: #c2ccda;
-  --muted: #8b98a9;
-  --faint: #6c7889;
+  --ink: #eef1f5;
+  --ink-soft: #cbd3dd;
+  --muted: #98a2ae;
+  --faint: #77828f;
 
-  --line: #2b3543;
-  --line-strong: #3c4859;
+  --line: #333c49;
+  --line-strong: #46505e;
 
-  --accent: #3ddc97;
-  --accent-deep: #7ef0be;
-  --accent-tint: #1c2b28;
-  --accent-line: #2f4a41;
-  --on-accent: #0d1b16;
+  /* 형광 민트는 이 앱의 낮 화면과 너무 달랐다. 낮과 같은 초록을 밝기만 올린다 */
+  --accent: #4fae7e;
+  --accent-deep: #74c79a;
+  --accent-tint: #22322b;
+  --accent-line: #354a3e;
+  --on-accent: #0f1a14;
 
-  --signal: #e8a866;
-  --signal-tint: #2a2318;
-  --signal-line: #4a3a24;
+  --signal: #d9a066;
+  --signal-tint: #2c261c;
+  --signal-line: #473c28;
 
-  --slate: #79b8e0;
-  --slate-deep: #a5d3f0;
-  --slate-tint: #1a2530;
-  --slate-line: #2d3f4e;
+  --slate: #86aecb;
+  --slate-deep: #a9c9df;
+  --slate-tint: #212c36;
+  --slate-line: #34434f;
 
-  --danger: #f0847a;
-  --danger-tint: #2c1d1c;
+  --danger: #e08a80;
+  --danger-tint: #2e2120;
 
-  --radius: 6px;
-  --radius-lg: 8px;
-  --shadow: none;
+  /* 낮 화면과 같은 둥근 모서리를 쓴다 — 밤이라고 각져질 이유가 없다 */
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow: 0 10px 26px rgb(0 0 0 / 0.3);
   --card-border: 1px solid var(--line);
 }
 

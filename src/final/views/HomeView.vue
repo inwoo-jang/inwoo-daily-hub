@@ -263,9 +263,14 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 
 <style scoped>
 /* 카드 사이를 넓게 — 여백이 정보를 정리해 준다 */
+/*
+ * 홈은 한 화면 안에서 끝나야 한다.
+ * 처음 들어와서 스크롤부터 해야 하면 '오늘 한눈에' 라는 말이 무색해진다.
+ * 그래서 여기 여백들은 다른 화면보다 한 단계씩 좁게 잡아 두었다.
+ */
 .home-page {
   display: grid;
-  gap: 18px;
+  gap: 13px;
 }
 
 .hero,
@@ -280,10 +285,10 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 /* ── ① 히어로 ── */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 190px;
-  gap: 30px;
+  grid-template-columns: minmax(0, 1fr) 172px;
+  gap: 20px;
   align-items: center;
-  padding: 40px 34px;
+  padding: 15px 26px;
 }
 
 .hero-text {
@@ -301,14 +306,14 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 h1 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(28px, 5.4vw, 38px);
+  font-size: clamp(26px, 4.6vw, 33px);
   font-weight: 700;
-  line-height: 1.28;
+  line-height: 1.3;
   letter-spacing: -0.02em;
 }
 
 .lead {
-  margin: 18px 0 0;
+  margin: 14px 0 0;
   color: var(--ink-soft);
   font-size: 14.5px;
   line-height: 1.75;
@@ -366,8 +371,8 @@ h1 {
 /* ── ③ 현재 위치 ── */
 .place {
   display: grid;
-  gap: 14px;
-  padding: 24px 26px;
+  gap: 7px;
+  padding: 12px 20px;
 }
 
 .place.ready {
@@ -541,9 +546,9 @@ h1 {
 
 .menu {
   display: grid;
-  gap: 4px;
+  gap: 3px;
   align-content: start;
-  padding: 20px 18px;
+  padding: 15px 15px 16px;
   color: inherit;
   text-decoration: none;
   transition:
@@ -560,10 +565,10 @@ h1 {
 .menu-icon {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
-  border-radius: 13px;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 7px;
+  border-radius: 12px;
 }
 
 .menu-icon.sky {
@@ -624,6 +629,97 @@ h1 {
 @media (prefers-reduced-motion: reduce) {
   .menu {
     transition: none;
+  }
+}
+
+/*
+ * 창이 낮을 때 (노트북 1280×800 처럼).
+ * 홈은 스크롤 없이 한 화면에서 끝나야 하므로, 높이가 모자라면 여백과 글자를
+ * 한 단계씩 더 줄인다. 내용을 빼지는 않는다 — 빼면 '오늘 한눈에'가 무너진다.
+ */
+@media (max-height: 860px) {
+  .home-page {
+    gap: 7px;
+  }
+
+  .hero {
+    gap: 18px;
+    padding: 16px 24px;
+  }
+
+  h1 {
+    font-size: clamp(23px, 3.6vw, 28px);
+  }
+
+  .lead {
+    margin-top: 10px;
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+
+  .place {
+    padding: 12px 18px;
+  }
+}
+
+/*
+ * 좁은 화면.
+ *
+ * 손안에서도 '오늘 한눈에' 가 지켜져야 한다 — 테스트 배너까지 한 화면에
+ * 들어오는 것을 목표로 여백·글자·그림을 한 단계씩 줄인다.
+ * 내용을 빼지는 않되, 카드의 설명 줄처럼 없어도 뜻이 통하는 것만 접는다.
+ */
+@media (max-width: 720px) {
+  .home-page {
+    gap: 9px;
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) 104px;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+
+  h1 {
+    font-size: 22px;
+    line-height: 1.32;
+  }
+
+  .lead {
+    margin-top: 8px;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  .place {
+    padding: 10px 14px;
+  }
+
+  /* 바로가기는 아이콘과 이름만 — 설명은 눌러 보면 안다 */
+  .menus {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .menu {
+    justify-items: center;
+    padding: 10px 6px 11px;
+    text-align: center;
+  }
+
+  .menu small {
+    display: none;
+  }
+
+  .menu-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 5px;
+    border-radius: 11px;
+  }
+
+  .menu b {
+    font-size: 13px;
   }
 }
 </style>

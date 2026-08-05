@@ -147,7 +147,7 @@ onBeforeUnmount(() => {
   gap: 14px;
   align-items: center;
   min-height: 96px;
-  padding: 14px 18px;
+  padding: 13px 18px;
   background: linear-gradient(
     100deg,
     color-mix(in srgb, var(--tone) 88%, transparent),
@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
 
 .art img {
   width: 62px;
-  height: 62px;
+  height: 66px;
   border: 2px solid #fff;
   border-radius: 50%;
   object-fit: cover;
