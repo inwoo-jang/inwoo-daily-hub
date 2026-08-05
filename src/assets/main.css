@@ -77,9 +77,9 @@
    ══════════════════════════════════════════════════════════════════ */
 
 :root[data-theme='terminal'] {
-  --paper: #1a1f27;
-  --surface: #242b35;
-  --surface-sunken: #2d3542;
+  --paper: #171a23;
+  --surface: #212632;
+  --surface-sunken: #2a3040;
 
   --ink: #eef1f5;
   --ink-soft: #cbd3dd;
@@ -89,21 +89,24 @@
   --line: #333c49;
   --line-strong: #46505e;
 
-  /* 형광 민트는 이 앱의 낮 화면과 너무 달랐다. 낮과 같은 초록을 밝기만 올린다 */
-  --accent: #4fae7e;
-  --accent-deep: #74c79a;
-  --accent-tint: #22322b;
-  --accent-line: #354a3e;
-  --on-accent: #0f1a14;
+  /*
+   * 어두운 바탕에 초록을 얹으면 낮 화면의 산뜻함이 사라지고 탁해 보인다.
+   * 밤에는 달빛에 가까운 남보라로 바꾼다 — 어두운 하늘 배경과도 결이 맞는다.
+   */
+  --accent: #8c9cf0;
+  --accent-deep: #a8b4f5;
+  --accent-tint: #262b3f;
+  --accent-line: #3b4260;
+  --on-accent: #141726;
 
   --signal: #d9a066;
   --signal-tint: #2c261c;
   --signal-line: #473c28;
 
-  --slate: #86aecb;
-  --slate-deep: #a9c9df;
-  --slate-tint: #212c36;
-  --slate-line: #34434f;
+  --slate: #93a7c9;
+  --slate-deep: #b4c4de;
+  --slate-tint: #232838;
+  --slate-line: #363d52;
 
   --danger: #e08a80;
   --danger-tint: #2e2120;
@@ -122,40 +125,42 @@
    ══════════════════════════════════════════════════════════════════ */
 
 :root[data-theme='blueprint'] {
-  --paper: #eef1f6;
-  --surface: #ffffff;
-  --surface-sunken: #e2e8f1;
+  --paper: #eff4fa;
+  --surface: #fdfeff;
+  --surface-sunken: #e4ecf5;
 
-  --ink: #12213a;
-  --ink-soft: #33455f;
-  --muted: #61718a;
-  --faint: #8e9bad;
+  --ink: #1b2a3d;
+  --ink-soft: #3b4c62;
+  --muted: #67788d;
+  --faint: #94a3b5;
 
-  --line: #c9d3e2;
-  --line-strong: #a5b3c8;
+  --line: #d4dfec;
+  --line-strong: #b3c3d6;
 
-  --accent: #1d4ed8;
-  --accent-deep: #16389c;
-  --accent-tint: #e4eaf9;
-  --accent-line: #a9bdec;
+  /* 코발트 원색은 눈이 아파 한낮 하늘빛으로 낮춘다 */
+  --accent: #3f74a8;
+  --accent-deep: #2c5680;
+  --accent-tint: #e6eef7;
+  --accent-line: #b8cde2;
   --on-accent: #ffffff;
 
-  --signal: #b45309;
-  --signal-tint: #fdf0dd;
-  --signal-line: #ecd3ab;
+  --signal: #b0763a;
+  --signal-tint: #f7efe4;
+  --signal-line: #e3cfb4;
 
-  --slate: #0f766e;
-  --slate-deep: #0a544e;
-  --slate-tint: #e0f0ee;
-  --slate-line: #aed3ce;
+  --slate: #4a7f8c;
+  --slate-deep: #365f6a;
+  --slate-tint: #e5eff1;
+  --slate-line: #bcd5da;
 
-  --danger: #be2f2f;
-  --danger-tint: #fbe9e9;
+  --danger: #b8544e;
+  --danger-tint: #f8eae9;
 
-  --radius: 0px;
-  --radius-lg: 2px;
-  --shadow: 3px 3px 0 var(--line-strong);
-  --card-border: 1.5px solid var(--ink);
+  /* 다른 테마와 같은 둥근 모서리를 쓴다 — 각진 도면 느낌은 이 앱과 안 맞았다 */
+  --radius: 12px;
+  --radius-lg: 18px;
+  --shadow: 0 10px 26px rgb(38 62 92 / 0.1);
+  --card-border: 1px solid var(--line);
 }
 
 :root {
@@ -370,4 +375,81 @@ a {
   border-color: color-mix(in srgb, var(--slate) 44%, transparent);
   background: color-mix(in srgb, var(--slate) 20%, transparent);
   color: var(--slate-deep);
+}
+
+/* ──────────────────────────────────────────────────────────────
+ * 확인 대화창 (ElMessageBox)
+ *
+ * 대화창은 <body> 끝으로 옮겨져 그려지므로 화면 안쪽 스타일이 닿지 않는다.
+ * 그래서 여기 한 곳에 두되, customClass 로 이 프로젝트 대화창만 고른다 —
+ * 갤러리처럼 여러 사람 화면이 한 앱에 있을 때 남의 것까지 바뀌지 않도록.
+ * 색은 전부 테마 토큰을 쓴다. 테마를 바꾸면 대화창도 같이 따라온다.
+ * ────────────────────────────────────────────────────────────── */
+.el-overlay:has(.inwoo-confirm) {
+  background: rgb(24 30 38 / 0.34);
+  backdrop-filter: blur(3px);
+}
+
+.el-message-box.inwoo-confirm {
+  padding: 22px 22px 18px;
+  border: 0;
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 20px 50px rgb(30 36 46 / 0.22);
+}
+
+.inwoo-confirm .el-message-box__header {
+  padding: 0 0 10px;
+}
+
+.inwoo-confirm .el-message-box__title {
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.inwoo-confirm .el-message-box__content {
+  padding: 0;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.inwoo-confirm .el-message-box__status.el-icon {
+  color: var(--signal);
+}
+
+.inwoo-confirm .el-message-box__btns {
+  padding: 18px 0 0;
+  gap: 6px;
+}
+
+.inwoo-confirm .el-button {
+  height: 34px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.inwoo-confirm .el-button:hover {
+  border-color: var(--line-strong);
+  color: var(--ink-soft);
+}
+
+/* 되돌릴 수 없는 쪽이라 확인 버튼만 채운다 */
+.inwoo-confirm .el-button--primary {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
+.inwoo-confirm .el-button--primary:hover {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 84%, #000);
+  color: #fff;
 }

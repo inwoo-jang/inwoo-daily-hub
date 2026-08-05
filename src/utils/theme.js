@@ -18,20 +18,24 @@ export const THEMES = [
     tagline: '기본',
     description: '따뜻한 종이 위의 초록. 날씨 배경이 가장 잘 비치는 기본 화면입니다.',
     swatches: ['#f6f4ef', '#fffefb', '#0f7a4e', '#16191c'],
+    // 미리보기 하늘 — 그 테마에서 이 앱이 어떤 공기인지 한눈에 보이도록
+    sky: ['#cfe2f5', '#eef4fb'],
   },
   {
     id: 'terminal',
     name: '나이트',
     tagline: '어두운 화면',
-    description: '밤에 보기 편한 짙은 화면. 같은 초록을 밝기만 올려 낮과 같은 얼굴을 유지합니다.',
-    swatches: ['#1a1f27', '#242b35', '#4fae7e', '#eef1f5'],
+    description: '밤에 보기 편한 짙은 화면. 달빛에 가까운 남보라로 눌러야 할 곳만 밝힙니다.',
+    swatches: ['#171a23', '#212632', '#8c9cf0', '#eef1f5'],
+    sky: ['#1d2333', '#2b3350'],
   },
   {
     id: 'blueprint',
     name: '스카이',
     tagline: '맑은 하늘',
-    description: '차갑고 맑은 청색. 하늘 배경과 같은 결로 화면 전체를 파랗게 맞춥니다.',
-    swatches: ['#eef1f6', '#ffffff', '#1d4ed8', '#12213a'],
+    description: '맑은 한낮의 하늘빛. 원색을 한 단계 낮춰 오래 봐도 눈이 편합니다.',
+    swatches: ['#eff4fa', '#fdfeff', '#3f74a8', '#1b2a3d'],
+    sky: ['#a8c8e6', '#dfeaf6'],
   },
 ]
 

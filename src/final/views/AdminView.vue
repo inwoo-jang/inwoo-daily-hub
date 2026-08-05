@@ -44,7 +44,13 @@ const removeOne = async (record) => {
     await ElMessageBox.confirm(
       `${record.owner?.name ?? '알 수 없음'}님의 ${record.type} 기록을 지울까요?`,
       '기록 삭제',
-      { confirmButtonText: '삭제', cancelButtonText: '그대로 두기', type: 'warning' },
+      {
+        confirmButtonText: '삭제',
+        cancelButtonText: '그대로 두기',
+        type: 'warning',
+        // 이 이름을 단 대화창만 아래 스타일이 잡는다 (다른 화면에는 안 번진다)
+        customClass: 'inwoo-confirm',
+      },
     )
   } catch {
     return // 취소
@@ -63,7 +69,13 @@ const resetAll = async () => {
     await ElMessageBox.confirm(
       `모든 사용자의 기록 ${records.value.length}건을 전부 지웁니다. 되돌릴 수 없습니다.`,
       '데이터 초기화',
-      { confirmButtonText: '전부 지우기', cancelButtonText: '그만두기', type: 'warning' },
+      {
+        confirmButtonText: '전부 지우기',
+        cancelButtonText: '그만두기',
+        type: 'warning',
+        // 이 이름을 단 대화창만 아래 스타일이 잡는다 (다른 화면에는 안 번진다)
+        customClass: 'inwoo-confirm',
+      },
     )
   } catch {
     return

@@ -1,5 +1,6 @@
 <script setup>
 import BaseDashboardCard from '../components/weather/BaseDashboardCard.vue'
+import CloverMark from '../final/components/CloverMark.vue'
 import { currentTheme, setTheme, THEMES } from '../utils/theme'
 
 /**
@@ -35,19 +36,27 @@ import { currentTheme, setTheme, THEMES } from '../utils/theme'
             :aria-pressed="currentTheme === theme.id"
             @click="setTheme(theme.id)"
           >
-            <!-- 그 테마의 색으로 이 앱 화면을 작게 그려 둔다 -->
-            <span class="preview" :style="{ background: theme.swatches[0] }" aria-hidden="true">
-              <span class="p-nav" :style="{ background: theme.swatches[1] }">
-                <i class="p-tab on" :style="{ background: theme.swatches[2] }" />
-                <i class="p-tab" :style="{ background: theme.swatches[3], opacity: 0.22 }" />
-                <i class="p-tab" :style="{ background: theme.swatches[3], opacity: 0.22 }" />
-              </span>
+            <!--
+              색 조각을 늘어놓으면 보고서처럼 보인다.
+              그 테마에서 이 앱이 어떤 공기인지 — 하늘 위에 카드 한 장이 떠 있는
+              장면으로 보여 준다. 클로버는 그 테마의 강조색을 그대로 쓴다.
+            -->
+            <span
+              class="preview"
+              :style="{ background: `linear-gradient(160deg, ${theme.sky[0]}, ${theme.sky[1]})` }"
+              aria-hidden="true"
+            >
+              <span class="p-sun" :style="{ background: theme.swatches[1] }" />
 
               <span class="p-card" :style="{ background: theme.swatches[1] }">
-                <i class="p-line" :style="{ background: theme.swatches[3], opacity: 0.8 }" />
-                <i class="p-line short" :style="{ background: theme.swatches[3], opacity: 0.32 }" />
-                <i class="p-dot" :style="{ background: theme.swatches[2] }" />
+                <CloverMark :size="17" :style="{ color: theme.swatches[2] }" />
+                <span class="p-lines">
+                  <i :style="{ background: theme.swatches[3], opacity: 0.75 }" />
+                  <i class="short" :style="{ background: theme.swatches[3], opacity: 0.28 }" />
+                </span>
               </span>
+
+              <span class="p-pill" :style="{ background: theme.swatches[2] }" />
             </span>
 
             <span class="meta">
@@ -150,49 +159,65 @@ h3 {
   box-shadow: 0 0 0 1px var(--accent);
 }
 
-/* ── 미리보기 (이 앱 화면을 축소한 그림) ── */
+/* ── 미리보기 (하늘 위에 뜬 카드 한 장면) ── */
 .preview {
-  display: grid;
-  gap: 7px;
-  padding: 9px;
-  border-radius: 12px;
+  position: relative;
+  display: block;
+  overflow: hidden;
+  height: 92px;
+  border-radius: 14px;
   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
 }
 
-.p-nav {
-  display: flex;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 99px;
-}
-
-.p-tab {
-  flex: 1;
-  height: 9px;
-  border-radius: 99px;
+/* 구름인지 해인지는 굳이 말하지 않는다. 밝은 기운 하나면 충분하다 */
+.p-sun {
+  position: absolute;
+  top: -14px;
+  right: -10px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  opacity: 0.55;
+  filter: blur(6px);
 }
 
 .p-card {
+  position: absolute;
+  right: 14px;
+  bottom: 16px;
+  left: 14px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 11px;
+  border-radius: 11px;
+  box-shadow: 0 6px 14px rgb(20 30 45 / 0.16);
+}
+
+.p-lines {
   display: grid;
-  gap: 6px;
-  padding: 10px;
-  border-radius: 10px;
+  gap: 4px;
+  flex: 1;
 }
 
-.p-line {
-  width: 100%;
-  height: 6px;
+.p-lines i {
+  display: block;
+  height: 5px;
   border-radius: 99px;
 }
 
-.p-line.short {
-  width: 58%;
+.p-lines i.short {
+  width: 56%;
 }
 
-.p-dot {
-  width: 22px;
-  height: 8px;
+.p-pill {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  width: 34px;
+  height: 9px;
   border-radius: 99px;
+  opacity: 0.9;
 }
 
 /* ── 설명 ── */

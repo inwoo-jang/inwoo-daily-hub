@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { CopyFilled, FileImageFilled } from '@ant-design/icons-vue'
+import { CopyFilled, DownloadOutlined } from '@ant-design/icons-vue'
 import BaseDashboardCard from '../../components/weather/BaseDashboardCard.vue'
 import UiIcon from '../../components/weather/UiIcon.vue'
 import { RECORD_KINDS, useRecordStore } from '../../stores/recordStore'
@@ -48,7 +48,13 @@ const confirmRemove = async (record) => {
     await ElMessageBox.confirm(
       `${formatDate(record.createdAt)}의 ${record.type} 기록을 지울까요?`,
       '기록 삭제',
-      { confirmButtonText: '삭제', cancelButtonText: '그대로 두기', type: 'warning' },
+      {
+        confirmButtonText: '삭제',
+        cancelButtonText: '그대로 두기',
+        type: 'warning',
+        // 이 이름을 단 대화창만 아래 스타일이 잡는다 (다른 화면에는 안 번진다)
+        customClass: 'inwoo-confirm',
+      },
     )
   } catch {
     // 취소를 누르면 여기로 온다 — 아무 일도 하지 않는다
@@ -279,7 +285,7 @@ onMounted(() => store.load())
               :disabled="savingId === record.id"
               @click="saveImage(record)"
             >
-              <FileImageFilled />
+              <DownloadOutlined />
             </button>
             <button type="button" class="danger" @click="confirmRemove(record)">삭제</button>
           </div>
@@ -580,14 +586,24 @@ time {
   font-weight: 600;
 }
 
-/* 아이콘 버튼은 글자 버튼과 같은 높이로 맞춰 둔다 */
+/*
+ * 아이콘 버튼은 테두리를 두르지 않는다.
+ * 옆의 '삭제' 처럼 알약을 씌우면 아이콘 셋이 나란히 서서 시끄럽다.
+ * 그림 하나만 놓고, 눌리는 자리는 넉넉히 잡아 둔다.
+ */
 .actions button.icon {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   padding: 0;
   place-items: center;
-  font-size: 13px;
+  border: 0;
+  color: var(--faint);
+  font-size: 14px;
+}
+
+.actions button.icon:hover {
+  color: var(--ink-soft);
 }
 
 .actions button.icon:disabled {
