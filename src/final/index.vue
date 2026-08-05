@@ -16,7 +16,7 @@ import { computed, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
-import logoUrl from '../assets/logo-dailyhub.png'
+import logoMark from '../assets/logo-mark.png'
 import UiIcon from '../components/weather/UiIcon.vue'
 import WeatherBackdrop from '../components/weather/WeatherBackdrop.vue'
 import { useAuthStore } from '../stores/authStore'
@@ -83,8 +83,13 @@ const logout = () => {
       메뉴는 그 아래 줄에서 본문과 같은 폭을 쓴다.
     -->
     <header class="topbar">
+      <!--
+        마크와 글자를 따로 둔다.
+        하나의 그림으로 두면 사이 간격도 글자 크기도 손댈 수 없다.
+      -->
       <RouterLink class="brand" :to="link('home')">
-        <img :src="logoUrl" alt="Daily Hub" />
+        <img :src="logoMark" alt="" aria-hidden="true" />
+        <span>Daily Hub</span>
       </RouterLink>
 
       <!-- 오른쪽 끝 — 로그인 상태와 환경 설정 -->
@@ -130,11 +135,25 @@ const logout = () => {
  * 바깥에 헤더가 없으므로 날씨 배경이 맨 위부터 맨 아래까지 이어진다.
  * 둥근 모서리와 여백을 두면 "페이지 안의 상자" 처럼 보여서 뺐다.
  */
+/*
+ * 화면 한 판.
+ *
+ * 위에서부터 [로고 줄] [메뉴 줄] [본문] 세 칸으로 나누고, 본문만 남는 높이를
+ * 전부 가져간다. 그래야 내용이 적은 화면(게임·테스트)과 많은 화면(날씨)의
+ * 판 크기가 같아진다 — 탭을 옮길 때 판이 늘었다 줄었다 하지 않는다.
+ *
+ * dvh 를 쓰는 이유 — 모바일은 주소창이 접혔다 펴지며 100vh 가 흔들린다.
+ */
 .final {
+  /* 메뉴·본문이 함께 쓰는 폭. 처음부터 좁게 잡아 두는 편이 보기 좋다 */
+  --shell: min(920px, 100% - 32px);
+
   position: relative;
   display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
   overflow: hidden;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   background: var(--paper);
 }
 
@@ -209,8 +228,14 @@ const logout = () => {
 }
 
 /* 배경만 전체를 쓰고, 읽는 것들은 가운데로 모은다 */
+/*
+ * 본문. 높이는 남는 만큼으로 고정하고, 넘칠 때만 이 안에서 스크롤한다.
+ * 페이지 전체가 늘어나면 메뉴가 위로 밀려 올라가 자리가 흔들린다.
+ */
 .column {
-  padding: 14px 0 72px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 0 28px;
   display: grid;
   /*
    * minmax(0, 1fr) 이 없으면 안 되는 이유 —
@@ -221,6 +246,22 @@ const logout = () => {
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 12px;
+}
+
+/* 스크롤 막대는 얇게. 판 위에 굵은 막대가 서면 눈에 먼저 들어온다 */
+.column::-webkit-scrollbar {
+  width: 8px;
+}
+
+.column::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 99px;
+  background: rgb(80 92 108 / 0.28);
+  background-clip: content-box;
+}
+
+.column::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .nav {
@@ -265,16 +306,30 @@ const logout = () => {
  * 로고는 흰색이다. 맑은 하늘 배경에서는 잘 보이지만 옅은 하늘·흐린 날에는
  * 묻히므로, 아주 옅은 그림자를 깔아 어떤 배경에서도 가장자리가 살게 한다.
  */
+/*
+ * 흰 로고다. 맑은 하늘에서는 잘 보이지만 옅은 하늘·흐린 날에는 묻히므로
+ * 아주 옅은 그림자를 깔아 어떤 배경에서도 가장자리가 살게 한다.
+ */
 .brand {
   display: inline-flex;
+  gap: 11px;
   align-items: center;
+  color: #fff;
   text-decoration: none;
 }
 
 .brand img {
   display: block;
-  height: 26px;
-  filter: drop-shadow(0 1px 2px rgb(30 40 55 / 0.35));
+  height: 30px;
+  filter: drop-shadow(0 1px 3px rgb(20 30 45 / 0.4));
+}
+
+.brand span {
+  font-family: var(--font-brand);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-shadow: 0 1px 3px rgb(20 30 45 / 0.4);
 }
 
 /* 톱니는 화면 오른쪽 끝 */
@@ -384,14 +439,49 @@ const logout = () => {
   color: var(--slate-deep);
 }
 
-@media (max-width: 620px) {
-  .url {
+/* ── 좁은 화면 ── */
+@media (max-width: 720px) {
+  .final {
+    --shell: calc(100% - 20px);
+  }
+
+  .topbar {
+    padding: 10px 12px 8px;
+  }
+
+  .brand img {
+    height: 25px;
+  }
+
+  .brand span {
+    font-size: 19px;
+  }
+
+  /* 탭 여섯 개가 한 줄에 들어와야 하므로 글자와 여백을 줄인다 */
+  .navbar .nav > a:not(.sign) {
+    padding: 9px 2px;
+    font-size: 12.5px;
+  }
+
+  .column {
+    padding-bottom: 20px;
+  }
+
+  /* 이름을 접고 버튼만 남긴다 */
+  .who b {
     display: none;
   }
 
-  /* 좁은 화면에서는 이름을 접고 버튼만 남긴다 */
-  .who b {
-    display: none;
+  .side .sign {
+    padding: 7px 13px;
+    font-size: 12.5px;
+  }
+}
+
+@media (max-width: 380px) {
+  .navbar .nav > a:not(.sign) {
+    padding: 9px 0;
+    font-size: 11.5px;
   }
 }
 </style>

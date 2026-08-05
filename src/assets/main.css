@@ -39,6 +39,13 @@
   --panel-strong: color-mix(in srgb, var(--surface) 92%, transparent);
   --panel-blur: saturate(1.06) blur(16px);
 
+  /*
+   * 이름표 전용 글꼴.
+   * 본문은 Pretendard 로 차분하게 가되, 'Daily Hub' 넉 자만 조금 둥글고
+   * 기하학적인 얼굴로 세운다. 라틴 글자만 쓰므로 무게가 거의 없다.
+   */
+  --font-brand: 'Outfit', 'Pretendard Variable', Pretendard, sans-serif;
+
   --accent: #0f7a4e;
   --accent-deep: #0a5637;
   --accent-tint: #e7efe8;
