@@ -8,6 +8,13 @@
  */
 export const rouletteSets = [
   {
+    // 처음 화면에 깔리는 세트 — 우리 조 이름을 그대로 넣어 두었다
+    id: 'team',
+    emoji: '🎯',
+    title: '우리조 내기',
+    items: ['김가연', '김동열', '박재흥', '이지영', '장인우', '조영우'],
+  },
+  {
     id: 'lunch',
     emoji: '🍚',
     title: '점심 뭐 먹지',

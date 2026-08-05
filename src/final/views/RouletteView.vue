@@ -8,6 +8,7 @@ import BaseDashboardCard from '../../components/weather/BaseDashboardCard.vue'
 import { useAuthStore } from '../../stores/authStore'
 import { useRecordStore } from '../../stores/recordStore'
 import { MAX_ITEMS, MIN_ITEMS, defaultSet, rouletteSets, sliceTones } from '../data/rouletteSets'
+import { randomBelow, shuffled } from '../utils/random'
 import { link } from '../routes'
 
 /**
@@ -91,8 +92,8 @@ const readAngle = () => {
 const stop = async () => {
   if (phase.value !== 'running') return
 
-  // ① 결과를 먼저 정한다
-  const index = Math.floor(Math.random() * items.value.length)
+  // ① 결과를 먼저 정한다 (내기에 쓰이므로 치우침 없는 난수로)
+  const index = randomBelow(items.value.length)
 
   /*
    * ② 그 칸이 위쪽 바늘에 오도록 각도를 정한다.
@@ -202,6 +203,20 @@ const commitEdit = () => {
   activeSetId.value = ''
   winner.value = ''
   cancelEdit()
+}
+
+/**
+ * 순서 섞기.
+ *
+ * 같은 사람이 늘 같은 칸에 있으면 "저 자리가 잘 걸린다" 같은 느낌이 생긴다.
+ * 돌리기 전에 한 번 섞어 두면 그 찜찜함이 없어진다.
+ */
+const shuffleItems = () => {
+  if (isSpinning.value || items.value.length < 2) return
+  items.value = shuffled(items.value)
+  activeSetId.value = ''
+  winner.value = ''
+  editingIndex.value = -1
 }
 
 /** 전체 삭제 — 되돌릴 수 없으니 비어 있으면 아무 일도 하지 않는다 */
@@ -379,14 +394,24 @@ onMounted(() => {
           <p class="section-label">
             항목 <b>{{ items.length }}</b> / {{ MAX_ITEMS }}
           </p>
-          <button
-            type="button"
-            class="clear"
-            :disabled="!items.length || isSpinning"
-            @click="clearAll"
-          >
-            전체 삭제
-          </button>
+          <span class="editor-acts">
+            <button
+              type="button"
+              class="clear shuffle"
+              :disabled="items.length < 2 || isSpinning"
+              @click="shuffleItems"
+            >
+              순서 섞기
+            </button>
+            <button
+              type="button"
+              class="clear"
+              :disabled="!items.length || isSpinning"
+              @click="clearAll"
+            >
+              전체 삭제
+            </button>
+          </span>
         </div>
 
         <form class="add" @submit.prevent="addItem">
@@ -811,6 +836,17 @@ h3 {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+}
+
+.editor-acts {
+  display: inline-flex;
+  gap: 6px;
+}
+
+/* 섞기는 지우기와 달리 되돌릴 수 있는 동작이라 빨강을 쓰지 않는다 */
+.clear.shuffle:hover:not(:disabled) {
+  border-color: var(--slate);
+  color: var(--slate-deep);
 }
 
 .clear {

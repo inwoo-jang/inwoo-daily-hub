@@ -156,12 +156,13 @@ onBeforeUnmount(() => {
   position: relative;
   display: block;
   width: 100%;
+  margin: 0 auto;
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
   /* 아래 안내가 겹쳐 앉을 자리를 비워 둔다 */
-  padding-bottom: 18px;
+  padding-bottom: 26px;
   /* 살짝 기울여 두면 눌러 보고 싶은 물건처럼 보인다 */
   transform: rotate(-3deg);
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);

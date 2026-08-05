@@ -39,6 +39,7 @@ const isGames = computed(() =>
 const isRecords = computed(() => route.name === 'final-records')
 const isLogin = computed(() => route.name === 'final-login')
 const isSettings = computed(() => route.name === 'final-settings')
+const isAdminPage = computed(() => route.name === 'final-admin')
 const isHome = computed(
   () =>
     !isWeather.value &&
@@ -47,6 +48,7 @@ const isHome = computed(
     !isGames.value &&
     !isRecords.value &&
     !isSettings.value &&
+    !isAdminPage.value &&
     !isLogin.value,
 )
 
@@ -56,7 +58,7 @@ const isHome = computed(
  * 눌러 보고 나서야 로그인이 필요하다는 걸 알게 된다.
  */
 const auth = useAuthStore()
-const { isLoggedIn, displayName } = storeToRefs(auth)
+const { isLoggedIn, isAdmin, displayName } = storeToRefs(auth)
 const recordStore = useRecordStore()
 
 // 새로고침해도 로그인이 유지되도록, 저장해 둔 토큰이 살아 있는지 한 번 확인한다
@@ -94,6 +96,9 @@ const logout = () => {
 
       <!-- 오른쪽 끝 — 로그인 상태와 환경 설정 -->
       <div class="side">
+        <!-- 지금 관리자로 보고 있다는 것을 늘 알려 준다 -->
+        <span v-if="isAdmin" class="admin-badge">ADMIN MODE</span>
+
         <span v-if="isLoggedIn" class="who">
           <b>{{ displayName }}</b>
           <button type="button" @click="logout">로그아웃</button>
@@ -118,6 +123,11 @@ const logout = () => {
         <RouterLink :to="link('tests')" :class="{ on: isTests }">테스트</RouterLink>
         <RouterLink :to="link('games')" :class="{ on: isGames }">게임</RouterLink>
         <RouterLink :to="link('records')" :class="{ on: isRecords }">My</RouterLink>
+
+        <!-- 관리자에게만 보인다. 화면을 막는 일은 가드와 서버가 따로 한다 -->
+        <RouterLink v-if="isAdmin" :to="link('admin')" class="admin-tab" :class="{ on: isAdminPage }">
+          관리
+        </RouterLink>
       </nav>
     </div>
 
@@ -211,6 +221,29 @@ const logout = () => {
   display: flex;
   gap: 6px;
   align-items: center;
+}
+
+/* 관리자 표시 — 지금 어떤 권한으로 보고 있는지 */
+.admin-badge {
+  padding: 5px 10px;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 999px;
+  background: rgb(214 96 84 / 0.85);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+/* 관리 탭도 색으로 구분해 둔다 — 다른 탭과 성격이 다르다 */
+.navbar .nav > a.admin-tab {
+  color: var(--danger);
+}
+
+.navbar .nav > a.admin-tab.on {
+  background: var(--danger);
+  color: #fff;
 }
 
 /* 알약 밖으로 나왔으니 자기 몫의 자리를 직접 잡는다 */

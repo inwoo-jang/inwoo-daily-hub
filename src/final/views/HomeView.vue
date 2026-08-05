@@ -6,6 +6,7 @@ import WeatherIcon from '../../components/weather/WeatherIcon.vue'
 import UiIcon from '../../components/weather/UiIcon.vue'
 import { fetchWeather, nearestCity } from '../../components/weather/weatherApi'
 import FortuneCookie from '../components/FortuneCookie.vue'
+import GameStrip from '../components/GameStrip.vue'
 import TestStrip from '../components/TestStrip.vue'
 import { useConfigStore } from '../../stores/configStore'
 import { link } from '../routes'
@@ -258,6 +259,7 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
     </section>
 
     <TestStrip />
+    <GameStrip />
   </main>
 </template>
 
@@ -270,7 +272,7 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
  */
 .home-page {
   display: grid;
-  gap: 13px;
+  gap: 11px;
 }
 
 .hero,
@@ -283,12 +285,19 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 }
 
 /* ── ① 히어로 ── */
+/*
+ * 히어로 — 이 화면의 첫인상.
+ *
+ * 다른 카드보다 여백을 넉넉히 준다. 여기가 빡빡하면 화면 전체가 급해 보인다.
+ * 쿠키 칸은 세로 가운데에 놓고, 쿠키 자신도 그 칸의 가운데에서 조금 위로
+ * 띄워 '떠 있는' 느낌을 만든다 — 아래 안내가 앉을 자리는 그만큼 비워 둔다.
+ */
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 172px;
+  grid-template-columns: minmax(0, 1fr) 232px;
   gap: 20px;
   align-items: center;
-  padding: 15px 26px;
+  padding: 28px 34px 26px;
 }
 
 .hero-text {
@@ -303,6 +312,12 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
   letter-spacing: 0.14em;
 }
 
+/* 쿠키는 제 칸 한가운데에 — 오른쪽 끝에 붙어 있으면 카드가 한쪽으로 쏠려 보인다 */
+.hero > .cookie {
+  justify-self: center;
+  width: 178px;
+}
+
 h1 {
   margin: 0;
   color: var(--ink);
@@ -313,10 +328,10 @@ h1 {
 }
 
 .lead {
-  margin: 14px 0 0;
+  margin: 16px 0 0;
   color: var(--ink-soft);
   font-size: 14.5px;
-  line-height: 1.75;
+  line-height: 1.85;
 }
 
 /* ── ② 요약 줄 ── */
@@ -548,7 +563,7 @@ h1 {
   display: grid;
   gap: 3px;
   align-content: start;
-  padding: 15px 15px 16px;
+  padding: 12px 14px 13px;
   color: inherit;
   text-decoration: none;
   transition:

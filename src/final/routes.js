@@ -12,6 +12,7 @@
  *   /final/games/lotto      로또 번호 뽑기
  *   /final/tests            테스트 — 룰 기반 심리테스트 목록
  *   /final/tests/:testId    테스트 진행 (animal · zombie)
+ *   /final/admin            관리자 — 전체 기록 관리 (role: ADMIN)
  *   /final/settings         환경 설정 — 테마
  *   /final/login            로그인 — 운세 기록을 남기려면 필요하다
  *   /final/records          내 운세 기록 (로그인한 사람만)
@@ -78,6 +79,13 @@ export default [
     path: 'tests/:testId',
     name: 'final-test',
     component: () => import('./views/TestPlayView.vue'),
+  },
+  {
+    // 관리자만 — meta.requiresAdmin 을 router/index.js 의 가드가 확인한다
+    path: 'admin',
+    name: 'final-admin',
+    component: () => import('./views/AdminView.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true },
   },
   {
     path: 'settings',

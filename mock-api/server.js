@@ -5,6 +5,7 @@ import { createToken, verifyToken } from './utils/token.js'
 
 const port = 3001
 const recordPath = /^\/api\/fortune-records\/(\d+)$/
+const adminRecordPath = /^\/api\/admin\/records\/(\d+)$/
 
 const publicUser = ({ id, email, name, role }) => ({ id, email, name, role })
 const authorizedUser = (request) => {
@@ -25,7 +26,6 @@ const validateRecord = (input) => {
   const kind = input.kind ?? 'tarot'
   if (!['tarot', 'test', 'game'].includes(kind)) return '기록 종류가 올바르지 않습니다.'
   if (typeof input.reading !== 'string' || !input.reading.trim()) return '기록할 내용이 필요합니다.'
-  if (typeof input.memo !== 'undefined' && typeof input.memo !== 'string') return '메모 형식이 올바르지 않습니다.'
 
   if (kind === 'tarot') {
     // 화면의 탭과 같은 목록 (src/final/data/tarotReading.js 의 READING_TYPES)
@@ -74,8 +74,50 @@ const server = http.createServer(async (request, response) => {
     }
 
     const user = authorizedUser(request)
-    if (url.pathname.startsWith('/api/fortune-records') || url.pathname.startsWith('/api/auth/me')) {
+    if (
+      url.pathname.startsWith('/api/fortune-records') ||
+      url.pathname.startsWith('/api/auth/me') ||
+      url.pathname.startsWith('/api/admin')
+    ) {
       if (!user) return sendJson(response, 401, { message: '로그인이 필요합니다.' })
+    }
+
+    /*
+     * 관리자 전용.
+     *
+     * 토큰에 담긴 role 로만 가른다 — 화면에서 메뉴를 감추는 것은 안내일 뿐,
+     * 실제로 막는 곳은 여기다. 주소를 직접 쳐도 STUDENT 는 못 지나간다.
+     */
+    if (url.pathname.startsWith('/api/admin')) {
+      if (user.role !== 'ADMIN') {
+        return sendJson(response, 403, { message: '관리자만 볼 수 있습니다.' })
+      }
+
+      // 전체 기록 — 누구 것인지 함께 담아 보낸다
+      if (request.method === 'GET' && url.pathname === '/api/admin/records') {
+        const withOwner = records.map((record) => ({
+          ...record,
+          owner: publicUser(users.find((item) => item.id === record.userId) ?? {}),
+        }))
+        return sendJson(response, 200, [...withOwner].reverse())
+      }
+
+      // 어느 사용자의 것이든 지운다
+      const adminMatch = url.pathname.match(adminRecordPath)
+      if (request.method === 'DELETE' && adminMatch) {
+        const index = records.findIndex((item) => item.id === Number(adminMatch[1]))
+        if (index === -1) return sendJson(response, 404, { message: '기록을 찾을 수 없습니다.' })
+        const [deleted] = records.splice(index, 1)
+        return sendJson(response, 200, deleted)
+      }
+
+      // 처음 상태로
+      if (request.method === 'POST' && url.pathname === '/api/admin/reset') {
+        resetRecords()
+        return sendJson(response, 200, { message: '모든 기록을 지웠습니다.' })
+      }
+
+      return sendJson(response, 404, { message: '존재하지 않는 API 경로입니다.' })
     }
     if (request.method === 'GET' && url.pathname === '/api/auth/me') return sendJson(response, 200, publicUser(user))
 
@@ -92,15 +134,6 @@ const server = http.createServer(async (request, response) => {
       const error = validateRecord(input)
       if (error) return sendJson(response, 400, { message: error })
       return sendJson(response, 201, createRecord(input, user.id))
-    }
-    if (request.method === 'PATCH' && match) {
-      const record = records.find((item) => item.id === Number(match[1]) && item.userId === user.id)
-      if (!record) return sendJson(response, 404, { message: '기록을 찾을 수 없습니다.' })
-      const { memo } = await readJson(request)
-      if (typeof memo !== 'string') return sendJson(response, 400, { message: '메모를 입력해 주세요.' })
-      record.memo = memo
-      record.updatedAt = new Date().toISOString()
-      return sendJson(response, 200, record)
     }
     if (request.method === 'DELETE' && match) {
       const index = records.findIndex((item) => item.id === Number(match[1]) && item.userId === user.id)

@@ -6,6 +6,7 @@ import BaseDashboardCard from '../../components/weather/BaseDashboardCard.vue'
 import { useAuthStore } from '../../stores/authStore'
 import { useRecordStore } from '../../stores/recordStore'
 import { downloadBlob, drawLottoCard } from '../utils/resultCard'
+import { shuffled } from '../utils/random'
 import { link } from '../routes'
 
 /**
@@ -64,12 +65,8 @@ const isFull = computed(() => sets.value.length >= MAX_SETS)
 
 /** 한 세트 뽑기 — 전부 무작위 */
 const drawSet = () => {
-  const pool = [...ALL_NUMBERS]
-  // 피셔-예이츠. sort(() => Math.random() - 0.5) 는 고르게 섞이지 않는다
-  for (let i = pool.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[pool[i], pool[j]] = [pool[j], pool[i]]
-  }
+  // 피셔-예이츠 + 암호용 난수. sort(() => Math.random() - 0.5) 는 고르게 섞이지 않는다
+  const pool = shuffled(ALL_NUMBERS)
   return {
     numbers: pool.slice(0, PICK).sort((a, b) => a - b),
     bonus: pool[PICK], // 본 번호로 안 쓴 것 중 하나

@@ -17,7 +17,6 @@ export const createRecord = (input, userId) => {
     reading: input.reading,
     // 심리테스트 결과 정보 (테스트 기록에만 있다)
     meta: input.meta ?? null,
-    memo: input.memo ?? '',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   }

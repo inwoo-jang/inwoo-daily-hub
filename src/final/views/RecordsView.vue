@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import BaseDashboardCard from '../../components/weather/BaseDashboardCard.vue'
@@ -38,38 +38,6 @@ const artOf = (record) => {
   return findTest(record.meta.testId)?.results?.[record.meta.resultId]?.image ?? ''
 }
 
-/* ── 메모 수정 ──────────────────────────────────────────────────── */
-
-/**
- * 어느 기록을 고치는 중인지 id 하나로 기억한다.
- * 기록마다 편집 상태를 따로 두면 목록을 다시 받을 때 서로 어긋난다.
- */
-const editingId = ref(0)
-const memoDraft = ref('')
-const isSavingMemo = ref(false)
-
-const startEdit = (record) => {
-  editingId.value = record.id
-  memoDraft.value = record.memo ?? ''
-}
-
-const cancelEdit = () => {
-  editingId.value = 0
-  memoDraft.value = ''
-}
-
-const saveMemo = async (record) => {
-  isSavingMemo.value = true
-  const ok = await store.editMemo(record.id, memoDraft.value.trim())
-  isSavingMemo.value = false
-  if (!ok) {
-    ElMessage.error(store.errorMessage)
-    return
-  }
-  ElMessage.success({ message: '메모를 저장했습니다.', duration: 1600 })
-  cancelEdit()
-}
-
 /* ── 삭제 ───────────────────────────────────────────────────────── */
 
 /** 되돌릴 수 없는 동작이라 한 번 묻는다 */
@@ -90,7 +58,6 @@ const confirmRemove = async (record) => {
     ElMessage.error(store.errorMessage)
     return
   }
-  if (editingId.value === record.id) cancelEdit()
   ElMessage.success({ message: '기록을 지웠습니다.', duration: 1600 })
 }
 
@@ -105,6 +72,19 @@ const dateFormatter = new Intl.DateTimeFormat('ko-KR', {
 })
 
 const formatDate = (iso) => dateFormatter.format(new Date(iso))
+
+/** 로또 기록인지 — 번호가 줄 단위로 담겨 있어야 공으로 그릴 수 있다 */
+const isLotto = (record) =>
+  record.kind === 'game' && record.meta?.gameId === 'lotto' && Array.isArray(record.meta.lines)
+
+/** 공 색 — 게임 화면과 같은 구간을 쓴다 */
+const lottoTone = (n) => {
+  if (n <= 10) return '#f5bf35'
+  if (n <= 20) return '#3d8fdd'
+  if (n <= 30) return '#e8564c'
+  if (n <= 40) return '#4b525c'
+  return '#3fa870'
+}
 
 /** 카드 세 장을 "정/역"까지 한 줄로 */
 const cardLine = (cards) =>
@@ -188,7 +168,27 @@ onMounted(() => store.load())
             </span>
           </div>
 
-          <!-- ② 게임 — 무엇이 나왔는지 -->
+          <!-- ② 로또 — 화면에서 본 그대로 색 공으로 -->
+          <div v-else-if="isLotto(record)" class="lotto-result">
+            <span v-for="(line, li) in record.meta.lines" :key="li" class="lotto-line">
+              <span
+                v-for="n in line"
+                :key="n"
+                class="ball"
+                :style="{ background: lottoTone(n) }"
+              >
+                {{ n }}
+              </span>
+              <template v-if="record.meta.bonus?.[li]">
+                <span class="plus" aria-hidden="true">+</span>
+                <span class="ball bonus" :style="{ background: lottoTone(record.meta.bonus[li]) }">
+                  {{ record.meta.bonus[li] }}
+                </span>
+              </template>
+            </span>
+          </div>
+
+          <!-- ③ 그 밖의 게임 — 무엇이 나왔는지 -->
           <p v-else-if="record.kind === 'game' && record.meta" class="game-result">
             <b>{{ record.meta.result }}</b>
             <small v-if="record.meta.items?.length">{{ record.meta.items.length }}개 중에서</small>
@@ -203,37 +203,12 @@ onMounted(() => store.load())
             </RouterLink>
           </p>
 
-          <!-- ③ 운세 — 뽑은 카드 -->
+          <!-- ④ 운세 — 뽑은 카드 -->
           <p v-else-if="record.cards?.length" class="cards">{{ cardLine(record.cards) }}</p>
 
           <p class="reading">{{ record.reading }}</p>
 
-          <!-- 메모: 보는 중 / 고치는 중 두 모습 -->
-          <div v-if="editingId === record.id" class="memo-edit">
-            <el-input
-              v-model="memoDraft"
-              type="textarea"
-              :rows="3"
-              maxlength="200"
-              show-word-limit
-              placeholder="이 기록에 남기고 싶은 말"
-            />
-            <div class="memo-actions">
-              <el-button size="small" :loading="isSavingMemo" type="primary" @click="saveMemo(record)">
-                저장
-              </el-button>
-              <el-button size="small" :disabled="isSavingMemo" @click="cancelEdit">취소</el-button>
-            </div>
-          </div>
-
-          <p v-else class="memo" :class="{ blank: !record.memo }">
-            {{ record.memo || '메모 없음' }}
-          </p>
-
           <div class="actions">
-            <button v-if="editingId !== record.id" type="button" @click="startEdit(record)">
-              {{ record.memo ? '메모 고치기' : '메모 남기기' }}
-            </button>
             <button type="button" class="danger" @click="confirmRemove(record)">삭제</button>
           </div>
         </li>
@@ -345,6 +320,46 @@ h3 {
 }
 
 /* 게임은 무엇이 나왔는지가 전부라 크게 한 줄 */
+/* ── 로또 기록 ── */
+.lotto-result {
+  display: grid;
+  gap: 6px;
+}
+
+.lotto-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+}
+
+.lotto-result .ball {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12.5px;
+  font-weight: 800;
+  box-shadow:
+    inset 0 -2px 4px rgb(0 0 0 / 0.18),
+    inset 0 2px 4px rgb(255 255 255 / 0.3);
+}
+
+.lotto-result .ball.bonus {
+  width: 26px;
+  height: 26px;
+  font-size: 11.5px;
+  opacity: 0.92;
+}
+
+.lotto-result .plus {
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .game-result {
   display: flex;
   flex-wrap: wrap;
@@ -465,31 +480,6 @@ time {
   font-size: 12.5px;
   line-height: 1.7;
   white-space: pre-wrap;
-}
-
-.memo {
-  margin: 0;
-  padding: 8px 10px;
-  border-left: 2px solid var(--accent-line);
-  color: var(--ink-soft);
-  font-size: 12.5px;
-  line-height: 1.6;
-  white-space: pre-wrap;
-}
-
-.memo.blank {
-  border-left-color: var(--line);
-  color: var(--faint);
-}
-
-.memo-edit {
-  display: grid;
-  gap: 8px;
-}
-
-.memo-actions {
-  display: flex;
-  gap: 6px;
 }
 
 .actions {

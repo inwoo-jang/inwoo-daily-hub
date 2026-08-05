@@ -58,8 +58,16 @@ router.beforeEach(async (to) => {
   const auth = useAuthStore()
   await auth.restore()
 
-  if (auth.isLoggedIn) return true
-  return { name: 'final-login', query: { redirect: to.fullPath } }
+  if (!auth.isLoggedIn) return { name: 'final-login', query: { redirect: to.fullPath } }
+
+  /*
+   * 관리자 화면은 한 겹 더 본다.
+   * 여기서 막는 것은 "잘못 들어온 사람을 돌려보내는" 안내에 가깝다 —
+   * 진짜로 막는 곳은 서버(와 브라우저 폴백)로, 토큰의 role 을 보고 403 을 준다.
+   */
+  if (to.meta.requiresAdmin && !auth.isAdmin) return { name: 'final-home' }
+
+  return true
 })
 
 export default router
