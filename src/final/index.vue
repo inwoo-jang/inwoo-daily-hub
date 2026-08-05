@@ -440,20 +440,27 @@ const logout = () => {
   place-items: center;
   width: 36px;
   height: 36px;
+  border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 50%;
-  color: var(--muted);
+  background: rgb(255 255 255 / 0.18);
+  color: #fff;
+  text-shadow: 0 1px 3px rgb(20 30 45 / 0.35);
   transition:
+    border-color 0.2s ease,
     background 0.2s ease,
     color 0.2s ease;
 }
 
 .gear:hover {
-  background: var(--panel);
-  color: var(--ink);
+  border-color: rgb(255 255 255 / 0.8);
+  background: rgb(255 255 255 / 0.3);
+  color: #fff;
 }
 
 .gear.on {
-  color: var(--slate-deep);
+  border-color: rgb(255 255 255 / 0.8);
+  background: rgb(255 255 255 / 0.3);
+  color: #fff;
 }
 
 .sr-only {
