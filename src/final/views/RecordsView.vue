@@ -1,12 +1,14 @@
 <script setup>
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { CopyFilled, FileImageFilled } from '@ant-design/icons-vue'
 import BaseDashboardCard from '../../components/weather/BaseDashboardCard.vue'
 import UiIcon from '../../components/weather/UiIcon.vue'
 import { RECORD_KINDS, useRecordStore } from '../../stores/recordStore'
 import { useAuthStore } from '../../stores/authStore'
 import { findTest } from '../data/personalityTests'
+import { downloadBlob, drawLottoCard, drawResultCard } from '../utils/resultCard'
 import { link } from '../routes'
 
 /**
@@ -72,6 +74,60 @@ const dateFormatter = new Intl.DateTimeFormat('ko-KR', {
 })
 
 const formatDate = (iso) => dateFormatter.format(new Date(iso))
+
+/* ── 한 건씩 가져가기 ──────────────────────────────────────────
+ *
+ * 기록은 남겨 두는 것으로 끝나지 않는다. 친구에게 보내거나 어딘가 붙여
+ * 두고 싶을 때가 있어서, 카드마다 '글자로 복사'와 '그림으로 저장'을 둔다.
+ * 그림은 각 화면에서 쓰던 카드 그리기를 그대로 다시 쓴다.
+ */
+const copyOne = async (record) => {
+  const lines = [`[${record.type}] ${formatDate(record.createdAt)}`, record.reading]
+  if (record.cards?.length) lines.splice(1, 0, cardLine(record.cards))
+  if (isLotto(record)) lines.splice(1, 0, record.meta.result)
+
+  try {
+    await navigator.clipboard.writeText(lines.join('\n'))
+    ElMessage.success({ message: '기록을 복사했어요.', duration: 1400 })
+  } catch {
+    ElMessage.warning('브라우저가 복사를 막았습니다. 길게 눌러 직접 복사해 주세요.')
+  }
+}
+
+/** 이 기록을 그림으로 만들 수 있는지 (테스트 · 로또만 그릴 그림이 있다) */
+const canDraw = (record) =>
+  isLotto(record) || (record.kind === 'test' && Boolean(findTest(record.meta?.testId)))
+
+const savingId = ref(0)
+
+const saveImage = async (record) => {
+  if (savingId.value) return
+  savingId.value = record.id
+  try {
+    let blob = null
+
+    if (isLotto(record)) {
+      const sets = record.meta.lines.map((numbers, i) => ({
+        letter: String.fromCharCode(65 + i),
+        numbers,
+        bonus: record.meta.bonus?.[i],
+      }))
+      blob = await drawLottoCard({ sets })
+    } else if (record.kind === 'test') {
+      const test = findTest(record.meta.testId)
+      const result = test?.results?.[record.meta.resultId]
+      if (result) blob = await drawResultCard({ test, result })
+    }
+
+    if (!blob) throw new Error('no blob')
+    downloadBlob(blob, `${record.type}_${formatDate(record.createdAt)}.png`)
+    ElMessage.success({ message: '그림으로 저장했어요!', duration: 1500 })
+  } catch {
+    ElMessage.error('그림을 만들지 못했어요.')
+  } finally {
+    savingId.value = 0
+  }
+}
 
 /** 로또 기록인지 — 번호가 줄 단위로 담겨 있어야 공으로 그릴 수 있다 */
 const isLotto = (record) =>
@@ -171,6 +227,8 @@ onMounted(() => store.load())
           <!-- ② 로또 — 화면에서 본 그대로 색 공으로 -->
           <div v-else-if="isLotto(record)" class="lotto-result">
             <span v-for="(line, li) in record.meta.lines" :key="li" class="lotto-line">
+              <!-- 몇 번째 세트인지는 번호 옆에 붙인다. 따로 한 줄을 쓰지 않는다 -->
+              <span class="letter">{{ String.fromCharCode(65 + li) }}</span>
               <span
                 v-for="n in line"
                 :key="n"
@@ -206,9 +264,23 @@ onMounted(() => store.load())
           <!-- ④ 운세 — 뽑은 카드 -->
           <p v-else-if="record.cards?.length" class="cards">{{ cardLine(record.cards) }}</p>
 
-          <p class="reading">{{ record.reading }}</p>
+          <!-- 로또는 공이 곧 내용이라 설명 줄을 따로 두지 않는다 -->
+          <p v-if="!isLotto(record)" class="reading">{{ record.reading }}</p>
 
           <div class="actions">
+            <button type="button" class="icon" title="글자로 복사" @click="copyOne(record)">
+              <CopyFilled />
+            </button>
+            <button
+              v-if="canDraw(record)"
+              type="button"
+              class="icon"
+              title="그림으로 저장"
+              :disabled="savingId === record.id"
+              @click="saveImage(record)"
+            >
+              <FileImageFilled />
+            </button>
             <button type="button" class="danger" @click="confirmRemove(record)">삭제</button>
           </div>
         </li>
@@ -324,6 +396,14 @@ h3 {
 .lotto-result {
   display: grid;
   gap: 6px;
+}
+
+.lotto-result .letter {
+  width: 14px;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .lotto-line {
@@ -498,6 +578,21 @@ time {
   font: inherit;
   font-size: 12px;
   font-weight: 600;
+}
+
+/* 아이콘 버튼은 글자 버튼과 같은 높이로 맞춰 둔다 */
+.actions button.icon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  place-items: center;
+  font-size: 13px;
+}
+
+.actions button.icon:disabled {
+  cursor: default;
+  opacity: 0.5;
 }
 
 .actions button:hover {
