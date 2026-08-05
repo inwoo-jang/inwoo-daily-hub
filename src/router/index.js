@@ -6,10 +6,10 @@ import finalRoutes from '../final/routes'
  * ------------------------------------------------------------------
  * 이 저장소는 최종 결과물 하나만 담는다. 그래서 결과물이 곧 첫 화면이다.
  *
- *   /          결과물 (껍데기 final/index.vue + 그 안의 화면들)
- *   /settings  환경 설정 (테마)
+ *   /   결과물 (껍데기 final/index.vue + 그 안의 화면들)
  *
- * 결과물 안쪽 주소(/weather · /tarot · /games …)는 final/routes.js 가 정한다.
+ * 안쪽 주소(/weather · /tarot · /games · /settings …)는 final/routes.js 가 정한다.
+ * 환경 설정도 그 안에 둔다 — 바깥에 두면 그 화면만 메뉴가 사라진다.
  * 그쪽 이름은 'final-' 로 시작하는 그대로 두었다 — 두 저장소를 오갈 때
  * 이름이 달라지면 링크를 전부 고쳐야 하기 때문이다.
  */
@@ -18,11 +18,6 @@ const routes = [
     path: '/',
     component: () => import('../final/index.vue'),
     children: finalRoutes,
-  },
-  {
-    path: '/settings',
-    name: 'settings',
-    component: () => import('../views/SettingsView.vue'),
   },
   {
     // 어디에도 걸리지 않은 주소를 전부 받는다. 반드시 맨 마지막이어야 한다.

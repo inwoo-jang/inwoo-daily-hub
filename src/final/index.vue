@@ -16,6 +16,7 @@ import { computed, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
+import UiIcon from '../components/weather/UiIcon.vue'
 import WeatherBackdrop from '../components/weather/WeatherBackdrop.vue'
 import { useAuthStore } from '../stores/authStore'
 import { useRecordStore } from '../stores/recordStore'
@@ -36,6 +37,7 @@ const isGames = computed(() =>
 )
 const isRecords = computed(() => route.name === 'final-records')
 const isLogin = computed(() => route.name === 'final-login')
+const isSettings = computed(() => route.name === 'final-settings')
 const isHome = computed(
   () =>
     !isWeather.value &&
@@ -43,6 +45,7 @@ const isHome = computed(
     !isTests.value &&
     !isGames.value &&
     !isRecords.value &&
+    !isSettings.value &&
     !isLogin.value,
 )
 
@@ -73,8 +76,16 @@ const logout = () => {
     <!-- 보고 있는 도시의 날씨가 배경이 된다 -->
     <WeatherBackdrop :status="backdropStatus" />
 
-    <!-- 홈 · 날씨 · 운세가 전부 같은 폭을 쓰도록 한 기둥 안에 넣는다 -->
-    <div class="column">
+    <!--
+      맨 윗줄. 배경 위에 그대로 얹혀 투명하다.
+      이름표는 화면 왼쪽 끝, 톱니는 오른쪽 끝에 붙이고 메뉴만 가운데에 둔다.
+    -->
+    <header class="topbar">
+      <RouterLink class="brand" :to="link('home')">
+        <span class="brand-mark">D</span>
+        Daily Hub
+      </RouterLink>
+
       <nav class="nav">
         <RouterLink :to="link('home')" :class="{ on: isHome }">홈</RouterLink>
         <RouterLink :to="link('weather')" :class="{ on: isWeather }">날씨</RouterLink>
@@ -83,11 +94,11 @@ const logout = () => {
         <RouterLink :to="link('games')" :class="{ on: isGames }">게임</RouterLink>
         <RouterLink :to="link('records')" :class="{ on: isRecords }">My</RouterLink>
 
-        <!-- 첫 화면에서는 '/' 한 글자만 남아 부스러기처럼 보인다. 그때는 접는다 -->
-        <code v-if="route.path !== '/'" class="url">{{ route.path }}</code>
-        <span v-else class="url-gap" />
 
-        <!-- 로그인했으면 이름과 로그아웃, 아니면 로그인 링크 -->
+      </nav>
+
+      <!-- 오른쪽 끝 — 로그인 상태와 환경 설정. 메뉴 알약 밖에 둔다 -->
+      <div class="side">
         <span v-if="isLoggedIn" class="who">
           <b>{{ displayName }}</b>
           <button type="button" @click="logout">로그아웃</button>
@@ -95,8 +106,16 @@ const logout = () => {
         <RouterLink v-else :to="link('login')" class="sign tint-cta" :class="{ on: isLogin }">
           로그인
         </RouterLink>
-      </nav>
 
+        <RouterLink class="gear" :to="link('settings')" :class="{ on: isSettings }" title="환경 설정">
+          <UiIcon name="gear" :size="18" />
+          <span class="sr-only">환경 설정</span>
+        </RouterLink>
+      </div>
+    </header>
+
+    <!-- 홈 · 날씨 · 운세가 전부 같은 폭을 쓰도록 한 기둥 안에 넣는다 -->
+    <div class="column">
       <!-- 주소에 맞는 화면이 여기 놓인다 -->
       <RouterView />
     </div>
@@ -104,13 +123,16 @@ const logout = () => {
 </template>
 
 <style scoped>
+/*
+ * 화면을 통째로 쓴다.
+ * 바깥에 헤더가 없으므로 날씨 배경이 맨 위부터 맨 아래까지 이어진다.
+ * 둥근 모서리와 여백을 두면 "페이지 안의 상자" 처럼 보여서 뺐다.
+ */
 .final {
   position: relative;
   display: grid;
   overflow: hidden;
-  min-height: 70vh;
-  padding: 12px;
-  border-radius: 16px;
+  min-height: 100vh;
   background: var(--paper);
 }
 
@@ -125,7 +147,52 @@ const logout = () => {
  * 안에 들어오는 화면은 자기 너비를 신경 쓰지 않아도 되고,
  * 그래서 홈에서 날씨로 넘어가도 판이 흔들리지 않는다.
  */
+/*
+ * 맨 윗줄 — 셋을 1fr auto 1fr 로 나눠 메뉴가 화면 한가운데에 오게 한다.
+ * space-between 으로는 이름표와 톱니의 폭이 달라 메뉴가 한쪽으로 밀린다.
+ */
+.topbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 22px 4px;
+}
+
+.topbar .nav {
+  justify-self: center;
+}
+
+.side {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-self: end;
+}
+
+/* 알약 밖으로 나왔으니 자기 몫의 자리를 직접 잡는다 */
+.side .sign {
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.side .who {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 5px 5px 5px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+/* 배경만 전체를 쓰고, 읽는 것들은 가운데로 모은다 */
 .column {
+  width: min(1100px, 100% - 40px);
+  margin: 0 auto;
+  padding: 14px 0 72px;
   display: grid;
   /*
    * minmax(0, 1fr) 이 없으면 안 되는 이유 —
@@ -177,6 +244,61 @@ const logout = () => {
 /* 주소가 접혔을 때도 로그인 버튼은 오른쪽 끝에 붙어 있어야 한다 */
 .url-gap {
   margin-left: auto;
+}
+
+.brand {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  justify-self: start;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* 톱니는 화면 오른쪽 끝 */
+.gear {
+  display: grid;
+  justify-self: end;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--muted);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.gear:hover {
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  color: var(--ink);
+}
+
+.gear.on {
+  color: var(--slate-deep);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
 }
 
 .url {
