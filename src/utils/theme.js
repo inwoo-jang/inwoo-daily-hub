@@ -13,13 +13,12 @@ export const THEMES = [
    * 보이는 이름과 색만 이 앱에 맞게 고쳤다.
    */
   {
-    id: 'editorial',
-    name: '데이라이트',
-    tagline: '따뜻한 종이',
-    description: '따뜻한 종이 위의 초록. 날씨 배경이 가장 잘 비치는 기본 화면입니다.',
-    swatches: ['#f6f4ef', '#fffefb', '#0f7a4e', '#16191c'],
-    // 미리보기 하늘 — 그 테마에서 이 앱이 어떤 공기인지 한눈에 보이도록
-    sky: ['#cfe2f5', '#eef4fb'],
+    id: 'blueprint',
+    name: '스카이',
+    tagline: '기본',
+    description: '맑은 한낮의 하늘빛. 날씨 배경과 가장 잘 어울리는 기본 화면입니다.',
+    swatches: ['#eff4fa', '#fdfeff', '#3f74a8', '#1b2a3d'],
+    sky: ['#a8c8e6', '#dfeaf6'],
   },
   {
     id: 'terminal',
@@ -30,12 +29,13 @@ export const THEMES = [
     sky: ['#1d2333', '#2b3350'],
   },
   {
-    id: 'blueprint',
-    name: '스카이',
-    tagline: '기본',
-    description: '맑은 한낮의 하늘빛. 원색을 한 단계 낮춰 오래 봐도 눈이 편합니다.',
-    swatches: ['#eff4fa', '#fdfeff', '#3f74a8', '#1b2a3d'],
-    sky: ['#a8c8e6', '#dfeaf6'],
+    id: 'editorial',
+    name: '데이라이트',
+    tagline: '따뜻한 종이',
+    description: '따뜻한 종이 위의 초록. 색을 아끼고 여백으로 읽는 화면입니다.',
+    swatches: ['#f6f4ef', '#fffefb', '#0f7a4e', '#16191c'],
+    // 미리보기 하늘 — 그 테마에서 이 앱이 어떤 공기인지 한눈에 보이도록
+    sky: ['#cfe2f5', '#eef4fb'],
   },
 ]
 
