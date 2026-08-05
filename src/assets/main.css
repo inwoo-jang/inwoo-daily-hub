@@ -46,8 +46,12 @@
    */
   --font-brand: 'Outfit', 'Pretendard Variable', Pretendard, sans-serif;
 
-  --accent: #0f7a4e;
-  --accent-deep: #0a5637;
+  /*
+   * 짙은 잉크그린은 하늘 배경 위에서 혼자 무겁게 가라앉았다.
+   * 잎사귀에 가까운 초록으로 한 단계 밝히고 노란기를 조금 섞는다.
+   */
+  --accent: #3f8f63;
+  --accent-deep: #2f6f4c;
   --accent-tint: #e7efe8;
   --accent-line: #b6cfc0;
   --on-accent: #ffffff;

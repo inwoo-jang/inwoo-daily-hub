@@ -15,7 +15,7 @@ export const THEMES = [
   {
     id: 'editorial',
     name: '데이라이트',
-    tagline: '기본',
+    tagline: '따뜻한 종이',
     description: '따뜻한 종이 위의 초록. 날씨 배경이 가장 잘 비치는 기본 화면입니다.',
     swatches: ['#f6f4ef', '#fffefb', '#0f7a4e', '#16191c'],
     // 미리보기 하늘 — 그 테마에서 이 앱이 어떤 공기인지 한눈에 보이도록
@@ -32,7 +32,7 @@ export const THEMES = [
   {
     id: 'blueprint',
     name: '스카이',
-    tagline: '맑은 하늘',
+    tagline: '기본',
     description: '맑은 한낮의 하늘빛. 원색을 한 단계 낮춰 오래 봐도 눈이 편합니다.',
     swatches: ['#eff4fa', '#fdfeff', '#3f74a8', '#1b2a3d'],
     sky: ['#a8c8e6', '#dfeaf6'],
@@ -40,7 +40,7 @@ export const THEMES = [
 ]
 
 const STORAGE_KEY = 'inwoo-vue-theme'
-const DEFAULT_THEME = 'editorial'
+const DEFAULT_THEME = 'blueprint'
 
 const isKnown = (id) => THEMES.some((t) => t.id === id)
 
