@@ -260,6 +260,12 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 
     <TestStrip />
     <GameStrip />
+
+    <p class="team-link">
+      <a href="https://inwoo-jang.github.io/6class-1group/" target="_blank" rel="noreferrer">
+        팀원 결과물 보러가기 →
+      </a>
+    </p>
   </main>
 </template>
 
@@ -273,6 +279,24 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 .home-page {
   display: grid;
   gap: 11px;
+}
+
+.team-link {
+  margin: -2px 0 -8px;
+  line-height: 1;
+  text-align: center;
+}
+
+.team-link a {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.team-link a:hover {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .hero,
