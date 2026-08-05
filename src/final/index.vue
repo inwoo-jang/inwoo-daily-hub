@@ -145,8 +145,13 @@ const logout = () => {
  * dvh 를 쓰는 이유 — 모바일은 주소창이 접혔다 펴지며 100vh 가 흔들린다.
  */
 .final {
-  /* 메뉴·본문이 함께 쓰는 폭. 처음부터 좁게 잡아 두는 편이 보기 좋다 */
-  --shell: min(920px, 100% - 32px);
+  /*
+   * 메뉴·본문이 함께 쓰는 폭.
+   *
+   * 안쪽 화면들은 원래 660px 안에서 만든 것이라 폭을 넓히면 카드가 늘어지고
+   * 글줄이 길어져 헐거워 보인다. 그 폭에서 조금만 여유를 준 값으로 둔다.
+   */
+  --shell: min(720px, 100% - 28px);
 
   position: relative;
   display: grid;
@@ -178,17 +183,16 @@ const logout = () => {
   gap: 12px;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 22px 10px;
+  padding: 18px 24px 12px;
 }
 
 /*
- * 메뉴 줄. 아래 본문과 같은 폭·같은 자리에서 시작하고 끝난다.
- * 창을 줄이면 둘이 같이 줄어들도록 폭 계산식을 그대로 맞춰 두었다.
+ * 메뉴 줄과 본문은 같은 폭(--shell)을 쓴다.
+ * 값을 한 곳에 두어야 한쪽만 고쳐 줄이 어긋나는 일이 없다.
  */
-/* 메뉴와 본문은 같은 폭 계산식을 쓴다. 한쪽만 고치면 줄이 어긋난다 */
 .navbar,
 .column {
-  width: min(1100px, 100% - 40px);
+  width: var(--shell);
   margin: 0 auto;
 }
 
@@ -235,7 +239,8 @@ const logout = () => {
 .column {
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 12px 0 28px;
+  /* 배경 날씨가 판 위아래로 보이도록 숨 쉴 자리를 둔다 */
+  padding: 12px 0 34px;
   display: grid;
   /*
    * minmax(0, 1fr) 이 없으면 안 되는 이유 —
