@@ -404,16 +404,50 @@ const humidity = computed(() => HUMIDITY_BANDS.find((b) => props.cityItem.humidi
 
 /* 좁아지면 수치 덩어리를 아래로 내린다 */
 @media (max-width: 720px) {
+  /*
+   * 좁은 화면 배치.
+   *
+   *   [아이콘] 도시 이름        ☆
+   *            상태          시간별
+   *   [기온]  [습도]
+   *
+   * 별표와 '시간별' 을 오른쪽 한 칸에 세로로 쌓으면, 둘이 차지하던 아래 한 줄이
+   * 통째로 없어져 카드가 그만큼 낮아진다.
+   */
   .weather-card {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    gap: 6px 8px;
+    align-items: start;
     margin-bottom: 7px;
     padding: 9px 11px;
   }
 
+  .sky {
+    grid-row: 1;
+    grid-column: 1;
+  }
+
   .metrics {
-    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-column: 1;
     grid-template-columns: repeat(2, max-content);
+    gap: 5px;
+  }
+
+  .star {
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .btn-detail {
+    grid-row: 2;
+    grid-column: 2;
+    justify-self: end;
+    align-self: center;
+    padding: 5px 11px;
+    font-size: 12px;
   }
 
   .icon-tile {

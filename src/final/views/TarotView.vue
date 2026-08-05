@@ -625,9 +625,30 @@ h2 { font-size: 24px; line-height: 1.25; }
 /* 화면 낭독기에만 읽히는 라벨 */
 .sr-only { position: absolute; overflow: hidden; width: 1px; height: 1px; clip-path: inset(50%); white-space: nowrap; }
 
-@media (max-width: 640px) {
-  .spread { grid-template-columns: 1fr; }
-  .slot-frame { max-width: 150px; }
+/*
+ * 좁은 화면.
+ *
+ * 예전에는 세 자리를 한 줄에 하나씩 쌓았는데, 그러면 '세 장을 나란히 놓고 본다'는
+ * 스프레드의 모양이 사라지고 스크롤만 길어졌다. 세 칸을 그대로 두고 카드와 글자를
+ * 줄여 한 줄에 들어오게 한다.
+ */
+@media (max-width: 720px) {
+  .spread { gap: 8px; padding: 14px 12px; }
+  .slot { gap: 6px; }
+  .slot-frame { max-width: none; }
+  .slot-label { font-size: 10px; }
+  .slot-label b { width: 15px; height: 15px; font-size: 9px; }
+  .slot-mark { width: 26px; height: 26px; font-size: 12px; }
+  .slot-wait { font-size: 9.5px; }
+  .slot-title { font-size: 11.5px; }
+  .slot-card { font-size: 11px; }
+
+  /* 탭도 같은 3등분이라 함께 좁힌다 */
+  .kind-tabs { margin: -22px -22px 14px; padding: 8px 8px 0; }
+  .kind-tabs button { padding: 9px 8px; font-size: 12px; }
+  .kind-tabs button small { font-size: 10px; }
+
+  .tarot-intro, .reading, .tarot-deck { padding: 20px 22px; }
 }
 @media (max-width: 540px) {
   .tarot-card-grid { grid-template-columns: repeat(10, 1fr); gap: 4px; }
