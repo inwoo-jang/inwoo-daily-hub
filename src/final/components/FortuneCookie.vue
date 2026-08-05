@@ -502,4 +502,13 @@ onBeforeUnmount(() => {
     animation: none;
   }
 }
+
+/* 좁은 화면 — 라벨이 쿠키 칸을 넘어가면 히어로 밖으로 삐져나온다 */
+@media (max-width: 720px) {
+  .label {
+    padding: 5px 8px;
+    font-size: 10.5px;
+    letter-spacing: -0.03em;
+  }
+}
 </style>

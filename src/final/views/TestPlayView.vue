@@ -250,7 +250,13 @@ watch(
             퍼센트는 채워진 막대로, 그 외 값은 그대로 크게 적는다.
           -->
           <ul v-if="outcome.result.facts" class="stats">
-            <li v-for="fact in outcome.result.facts" :key="fact.label" :class="{ gauge: percentOf(fact.value) !== null }">
+            <!-- 클래스 이름은 stat-* 로 묶는다. 아래 점수 막대가 이미 .gauge 를 쓰고 있어
+                 같은 이름을 붙이면 그 규칙(height: 7px)이 이 칸에 걸린다 -->
+            <li
+              v-for="fact in outcome.result.facts"
+              :key="fact.label"
+              :class="{ 'stat-wide': percentOf(fact.value) !== null }"
+            >
               <span class="stat-top">
                 <small>{{ fact.label }}</small>
                 <b>{{ fact.value }}</b>
@@ -643,7 +649,7 @@ h4 {
   background: rgb(255 255 255 / 0.9);
 }
 
-.stats li.gauge {
+.stats li.stat-wide {
   min-width: 240px;
 }
 

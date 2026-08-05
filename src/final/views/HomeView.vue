@@ -603,19 +603,6 @@ h1 {
   line-height: 1.55;
 }
 
-@media (max-width: 640px) {
-  .hero {
-    grid-template-columns: minmax(0, 1fr);
-    padding: 30px 24px;
-  }
-
-  /* 좁은 화면에서는 쿠키를 작게 가운데로 */
-  .hero > .cookie {
-    width: 170px;
-    justify-self: center;
-  }
-}
-
 @media (max-width: 520px) {
   .place.ready {
     grid-template-columns: auto minmax(0, 1fr);
@@ -675,9 +662,15 @@ h1 {
   }
 
   .hero {
-    grid-template-columns: minmax(0, 1fr) 104px;
-    gap: 12px;
-    padding: 14px 16px;
+    /* 쿠키 칸을 '오늘의 포춘 열기' 가 들어갈 만큼은 준다 */
+    grid-template-columns: minmax(0, 1fr) 132px;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  /* 쿠키는 제 칸을 넘지 않는다 — 넘으면 라벨이 히어로 밖으로 삐져나온다 */
+  .hero > .cookie {
+    width: 100%;
   }
 
   h1 {
@@ -693,6 +686,29 @@ h1 {
 
   .place {
     padding: 10px 14px;
+  }
+
+  /*
+   * 위치 카드가 화면의 3분의 1을 먹고 있었다.
+   * 받을 수 있는 것들(기온·체감·강수·미세먼지)은 안내일 뿐이라 접고,
+   * 온도는 지역 이름 옆으로 올려 두 줄을 한 줄로 만든다.
+   */
+  .perks {
+    display: none;
+  }
+
+  .connect-hint {
+    font-size: 11.5px;
+    line-height: 1.55;
+  }
+
+  .place.ready {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .place-temp {
+    grid-column: auto;
   }
 
   /* 바로가기는 아이콘과 이름만 — 설명은 눌러 보면 안다 */
