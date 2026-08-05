@@ -91,7 +91,7 @@ const saveImage = async () => {
     const blob = await drawFortuneCard({ message: message.value, image: closedCookie })
     if (!blob) throw new Error('no blob')
     downloadBlob(blob, `오늘의포춘_${new Date().toLocaleDateString('ko-KR')}.png`)
-    ElMessage.success({ message: '그림으로 저장했어요!', duration: 1600 })
+    ElMessage.success({ message: '이미지로 저장했어요!', duration: 1600 })
   } catch {
     ElMessage.error('그림을 만들지 못했어요. 잠시 뒤 다시 눌러 주세요.')
   } finally {
@@ -167,13 +167,19 @@ onBeforeUnmount(() => {
 
             <div class="acts">
               <div class="tools" aria-label="포춘 저장 및 공유">
-                <button type="button" class="tool" :disabled="isSaving" title="그림으로 저장" @click="saveImage">
+                <button
+                  type="button"
+                  class="tool"
+                  :disabled="isSaving"
+                  aria-label="이미지로 저장"
+                  @click="saveImage"
+                >
                   <DownloadOutlined />
-                  <span class="sr-only">{{ isSaving ? '그림 만드는 중' : '그림으로 저장' }}</span>
+                  <span class="tool-label">{{ isSaving ? '만드는 중' : '저장' }}</span>
                 </button>
-                <button type="button" class="tool" title="공유" @click="share">
+                <button type="button" class="tool" aria-label="공유" @click="share">
                   <ShareAltOutlined />
-                  <span class="sr-only">공유</span>
+                  <span class="tool-label">공유</span>
                 </button>
               </div>
               <div class="main-acts">
@@ -478,21 +484,26 @@ onBeforeUnmount(() => {
 
 /* ── 버튼 ── */
 .acts { display: grid; gap: 14px; }
-.tools { display: flex; gap: 2px; justify-content: center; }
+.tools { display: flex; gap: 16px; justify-content: center; }
 .tools .tool {
-  display: grid;
-  width: 34px;
-  height: 34px;
+  display: flex;
+  min-width: 42px;
+  min-height: 40px;
   padding: 0;
-  place-items: center;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
   border: 0;
   border-radius: 50%;
   background: transparent;
   color: var(--faint);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
 }
+.tool-label { color: var(--faint); font-size: 11px; line-height: 1; white-space: nowrap; }
 .tools .tool:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.tools .tool:hover .tool-label { color: var(--ink); }
 .tools .tool:disabled { cursor: wait; opacity: .5; }
 .main-acts { display: flex; gap: 8px; justify-content: center; }
 .main-acts button {
@@ -561,11 +572,31 @@ onBeforeUnmount(() => {
 /* 좁은 화면 — 라벨이 쿠키 칸을 넘어가면 히어로 밖으로 삐져나온다 */
 @media (max-width: 720px) {
   .label {
-    right: 0;
-    left: 0;
-    padding: 5px 8px;
-    font-size: 10.5px;
+    right: -18px;
+    left: -18px;
+    padding: 9px 12px;
+    font-size: 11.5px;
     letter-spacing: -0.03em;
   }
+}
+
+:global(:root[data-theme='blueprint']) .label {
+  border-color: rgb(220 243 255 / 0.8);
+  background:
+    linear-gradient(
+      110deg,
+      rgb(112 151 178 / 0.58) 0%,
+      rgb(88 137 166 / 0.62) 42%,
+      rgb(118 168 191 / 0.6) 100%
+    );
+  box-shadow:
+    0 9px 24px rgb(77 123 151 / 0.24),
+    inset 0 1px 0 rgb(255 255 255 / 0.48);
+}
+
+@media (hover: none), (pointer: coarse) {
+  .tools { gap: 18px; }
+  .tools .tool { min-width: 48px; min-height: 46px; font-size: 17px; }
+  .tool-label { font-size: 11.5px; }
 }
 </style>

@@ -17,8 +17,8 @@ export const THEMES = [
     name: '스카이',
     tagline: '기본',
     description: '맑은 한낮의 하늘빛. 날씨 배경과 가장 잘 어울리는 기본 화면입니다.',
-    swatches: ['#eff4fa', '#fdfeff', '#3f74a8', '#1b2a3d'],
-    sky: ['#a8c8e6', '#dfeaf6'],
+    swatches: ['#edf6ff', '#fcfeff', '#6494b3', '#1b2a3d'],
+    sky: ['#9dcdf1', '#e4f3ff'],
   },
   {
     id: 'terminal',

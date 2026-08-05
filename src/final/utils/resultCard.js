@@ -128,7 +128,7 @@ const measure = (result) => {
  * @param {object} options.result  결과 (title · subtitle · image · keywords …)
  */
 export const drawResultCard = async ({ test, result }) => {
-  const tone = test.accent || '#5e8a72'
+  const tone = result.tone || test.accent || '#5e8a72'
 
   // 글꼴이 아직 안 왔으면 기본 글꼴로 그려진다. 다 올 때까지 기다린다
   await document.fonts?.ready

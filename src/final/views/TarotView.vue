@@ -177,7 +177,7 @@ const saveImage = async () => {
     })
     if (!blob) throw new Error('no blob')
     downloadBlob(blob, `${activeType.value}_${new Date().toLocaleDateString('ko-KR')}.png`)
-    ElMessage.success({ message: '그림으로 저장했어요!', duration: 1600 })
+    ElMessage.success({ message: '이미지로 저장했어요!', duration: 1600 })
   } catch (error) {
     // 무엇 때문에 실패했는지 남겨 둔다 — 토스트만 뜨면 원인을 알 수 없다
     console.error('[tarot] 그림 만들기 실패', error)
@@ -203,6 +203,7 @@ const { isSaving } = storeToRefs(recordStore)
 
 /** 0 이면 아직 저장 전, 값이 있으면 그 기록의 id */
 const savedRecordId = ref(0)
+const isReplay = ref(false)
 
 const restoreReplay = (raw) => {
   if (!raw) return
@@ -217,6 +218,8 @@ const restoreReplay = (raw) => {
       .filter(Boolean)
     if (restored.length !== 3) return
     activeType.value = replay.type
+    isReplay.value = true
+    savedRecordId.value = Number(route.query.recordId) || 0
     picks.value = restored
   } catch {
     // 오래된 링크나 잘못된 쿼리는 새 운세를 시작하면 된다
@@ -268,7 +271,7 @@ const saveReading = async () => {
 watch(
   [isComplete, readingText, isLoggedIn],
   ([complete, text, loggedIn]) => {
-    if (!complete || !loggedIn) return
+    if (!complete || !loggedIn || isReplay.value) return
     if (!text.trim() || savedRecordId.value || isSaving.value) return
     saveReading()
   },
@@ -301,6 +304,7 @@ const goToDeck = () => {
 }
 
 const drawAgain = () => {
+  isReplay.value = false
   resetReading()
   picks.value = []
   shuffledCards.value = makeShuffledDeck()
@@ -417,7 +421,7 @@ const drawAgain = () => {
       <div class="save-row">
         <!-- 뽑은 세 장을 그림 한 장으로 -->
         <button type="button" class="tarot-act" :disabled="isMakingImage" @click="saveImage">
-          <DownloadOutlined /> {{ isMakingImage ? '만드는 중…' : '그림으로 저장' }}
+          <DownloadOutlined /> {{ isMakingImage ? '만드는 중…' : '이미지로 저장' }}
         </button>
         <button type="button" class="tarot-act quiet" @click="copyPrompt">
           <CopyOutlined /> 프롬프트 복사

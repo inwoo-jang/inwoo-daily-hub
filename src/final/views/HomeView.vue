@@ -685,7 +685,9 @@ h1 {
 
   /* 쿠키는 제 칸을 넘지 않는다 — 넘으면 라벨이 히어로 밖으로 삐져나온다 */
   .hero > .cookie {
-    width: 100%;
+    width: 124px;
+    justify-self: center;
+    transform: translateX(-8px);
   }
 
   h1 {

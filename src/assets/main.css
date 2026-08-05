@@ -129,33 +129,33 @@
    ══════════════════════════════════════════════════════════════════ */
 
 :root[data-theme='blueprint'] {
-  --paper: #eff4fa;
-  --surface: #fdfeff;
-  --surface-sunken: #e4ecf5;
+  --paper: #edf6ff;
+  --surface: #fcfeff;
+  --surface-sunken: #e1edf8;
 
   --ink: #1b2a3d;
   --ink-soft: #3b4c62;
   --muted: #67788d;
   --faint: #94a3b5;
 
-  --line: #d4dfec;
-  --line-strong: #b3c3d6;
+  --line: #d0e1f0;
+  --line-strong: #afcbe1;
 
   /* 코발트 원색은 눈이 아파 한낮 하늘빛으로 낮춘다 */
-  --accent: #3f74a8;
-  --accent-deep: #2c5680;
-  --accent-tint: #e6eef7;
-  --accent-line: #b8cde2;
+  --accent: #6494b3;
+  --accent-deep: #4b748e;
+  --accent-tint: #e6f0f6;
+  --accent-line: #bdd3e1;
   --on-accent: #ffffff;
 
   --signal: #b0763a;
   --signal-tint: #f7efe4;
   --signal-line: #e3cfb4;
 
-  --slate: #4a7f8c;
-  --slate-deep: #365f6a;
-  --slate-tint: #e5eff1;
-  --slate-line: #bcd5da;
+  --slate: #3d8098;
+  --slate-deep: #2d6278;
+  --slate-tint: #e1f1f5;
+  --slate-line: #b6d9e3;
 
   --danger: #b8544e;
   --danger-tint: #f8eae9;
