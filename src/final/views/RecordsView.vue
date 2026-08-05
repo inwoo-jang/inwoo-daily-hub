@@ -152,6 +152,17 @@ const lottoTone = (n) => {
 const cardLine = (cards) =>
   (cards ?? []).map((card) => `${card.name}${card.reversed ? '(역)' : ''}`).join(' · ')
 
+const summaryOf = (record) =>
+  String(record.reading ?? '')
+    .replace(/\n+/g, ' ')
+    .split(/[.!?。]/)[0]
+    .trim()
+
+const tarotReplayLink = (record) =>
+  link('tarot', {}, {
+    replay: JSON.stringify({ type: record.type, cards: record.cards }),
+  })
+
 onMounted(() => store.load())
 </script>
 
@@ -268,7 +279,11 @@ onMounted(() => store.load())
           </p>
 
           <!-- ④ 운세 — 뽑은 카드 -->
-          <p v-else-if="record.cards?.length" class="cards">{{ cardLine(record.cards) }}</p>
+          <RouterLink v-else-if="record.cards?.length" class="tarot-result" :to="tarotReplayLink(record)">
+            <span class="cards">{{ cardLine(record.cards) }}</span>
+            <small>{{ summaryOf(record) }}</small>
+            <em>결과 다시 보기 →</em>
+          </RouterLink>
 
           <!-- 로또는 공이 곧 내용이라 설명 줄을 따로 두지 않는다 -->
           <p v-if="!isLotto(record)" class="reading">{{ record.reading }}</p>
@@ -559,6 +574,10 @@ time {
   font-size: 12.5px;
   font-weight: 600;
 }
+
+.tarot-result { display: grid; gap: 4px; color: inherit; text-decoration: none; }
+.tarot-result small { overflow: hidden; color: var(--muted); font-size: 12px; line-height: 1.5; text-overflow: ellipsis; white-space: nowrap; }
+.tarot-result em { color: var(--accent); font-size: 11.5px; font-style: normal; font-weight: 700; }
 
 .reading {
   margin: 0;

@@ -1,6 +1,7 @@
 <script setup>
 import { onBeforeUnmount, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
+import { DownloadOutlined, ShareAltOutlined } from '@ant-design/icons-vue'
 import closedCookie from '../../assets/cookie/closed.png'
 import openCookie from '../../assets/cookie/open.png'
 import { anotherMessage, messageOfToday } from '../data/fortuneCookie'
@@ -48,6 +49,34 @@ const again = () => {
     message.value = anotherMessage(message.value)
     isCracked.value = true
   }, 220)
+}
+
+/*
+ * 공유 — 주소를 복사해 준다.
+ *
+ * 휴대폰에는 운영체제가 주는 공유창(navigator.share)이 있고, 없는 곳에서는
+ * 클립보드에 넣어 준다. 어느 쪽이든 "받은 한 줄 + 이 사이트 주소"가 간다.
+ */
+const share = async () => {
+  const text = `🥠 ${message.value}`
+  const url = window.location.origin + import.meta.env.BASE_URL
+
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Daily Hub — 오늘의 포춘', text, url })
+      return
+    } catch {
+      // 공유창을 닫은 경우 — 아래 복사로 넘어가지 않고 조용히 끝낸다
+      return
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(`${text}\n${url}`)
+    ElMessage.success({ message: '링크를 복사했어요!', duration: 1600 })
+  } catch {
+    ElMessage.warning('브라우저가 복사를 막았습니다. 주소창을 직접 복사해 주세요.')
+  }
 }
 
 /* 받은 한 줄을 그림 한 장으로 — 저장해 두거나 보내기 좋게 */
@@ -137,11 +166,20 @@ onBeforeUnmount(() => {
             <p class="say">{{ message }}</p>
 
             <div class="acts">
-              <button type="button" class="ghost" @click="again">하나 더</button>
-              <button type="button" class="ghost" :disabled="isSaving" @click="saveImage">
-                {{ isSaving ? '만드는 중…' : '그림으로 저장' }}
-              </button>
-              <button type="button" class="solid" @click="close">잘 받았어요</button>
+              <div class="tools" aria-label="포춘 저장 및 공유">
+                <button type="button" class="tool" :disabled="isSaving" title="그림으로 저장" @click="saveImage">
+                  <DownloadOutlined />
+                  <span class="sr-only">{{ isSaving ? '그림 만드는 중' : '그림으로 저장' }}</span>
+                </button>
+                <button type="button" class="tool" title="공유" @click="share">
+                  <ShareAltOutlined />
+                  <span class="sr-only">공유</span>
+                </button>
+              </div>
+              <div class="main-acts">
+                <button type="button" class="ghost" @click="again">하나 더</button>
+                <button type="button" class="solid" @click="close">잘 받았어요</button>
+              </div>
             </div>
           </div>
         </div>
@@ -439,13 +477,25 @@ onBeforeUnmount(() => {
 }
 
 /* ── 버튼 ── */
-.acts {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
+.acts { display: grid; gap: 14px; }
+.tools { display: flex; gap: 2px; justify-content: center; }
+.tools .tool {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  font-size: 16px;
 }
-
-.acts button {
+.tools .tool:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+.tools .tool:disabled { cursor: wait; opacity: .5; }
+.main-acts { display: flex; gap: 8px; justify-content: center; }
+.main-acts button {
   padding: 11px 20px;
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -457,13 +507,13 @@ onBeforeUnmount(() => {
   font-weight: 700;
 }
 
-.acts .solid {
+.main-acts .solid {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--on-accent);
 }
 
-.acts button:hover {
+.main-acts button:hover {
   opacity: 0.88;
 }
 

@@ -246,12 +246,27 @@ const logout = () => {
   color: #fff;
 }
 
-/* 알약 밖으로 나왔으니 자기 몫의 자리를 직접 잡는다 */
+/*
+ * 알약 밖으로 나왔으니 자기 몫의 자리를 직접 잡는다.
+ *
+ * 하늘 배경 위에서는 옅은 청회색 글자가 잘 안 보인다. 흰 글자에 흰 테를
+ * 두르고 안쪽만 살짝 비치게 두면, 맑은 날에도 흐린 날에도 또렷하다.
+ */
 .side .sign {
-  padding: 8px 16px;
+  padding: 8px 22px;
+  border: 1px solid rgb(255 255 255 / 0.55);
   border-radius: 999px;
+  background: rgb(255 255 255 / 0.18);
+  color: #fff;
   font-size: 13px;
   text-decoration: none;
+  text-shadow: 0 1px 3px rgb(20 30 45 / 0.35);
+}
+
+.side .sign:hover {
+  border-color: rgb(255 255 255 / 0.8);
+  background: rgb(255 255 255 / 0.3);
+  color: #fff;
 }
 
 .side .who {
