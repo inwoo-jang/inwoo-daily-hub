@@ -240,7 +240,29 @@ const logout = () => {
   overflow-y: auto;
   overscroll-behavior: contain;
   /* 배경 날씨가 판 위아래로 보이도록 숨 쉴 자리를 둔다 */
-  padding: 10px 0 16px;
+  padding: 12px 0 16px;
+
+  /*
+   * 위아래 끝을 옅게 지운다.
+   *
+   * 굴리면 카드가 메뉴 알약 바로 밑까지 올라와 잘린 채로 걸려 있었다.
+   * 선을 하나 긋는 방법도 있지만, 그러면 이 화면에 없던 칸막이가 생긴다.
+   * 대신 끝에서 서서히 사라지게 두면 "여기서부터 접힌다"가 저절로 읽힌다.
+   */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 18px,
+    #000 calc(100% - 14px),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 18px,
+    #000 calc(100% - 14px),
+    transparent 100%
+  );
   display: grid;
   /*
    * minmax(0, 1fr) 이 없으면 안 되는 이유 —
