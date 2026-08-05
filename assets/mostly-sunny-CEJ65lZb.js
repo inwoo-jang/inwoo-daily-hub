@@ -1,0 +1,1 @@
+var e=`/inwoo-daily-hub/assets/mostly-sunny-DuNHcwGI.jpg`;export{e as default};

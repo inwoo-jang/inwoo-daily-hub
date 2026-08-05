@@ -1,0 +1,1 @@
+var e=`/inwoo-daily-hub/assets/lightning-Bo42aB0B.jpg`;export{e as default};

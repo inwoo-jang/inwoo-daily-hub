@@ -1,0 +1,1 @@
+var e=`/inwoo-daily-hub/assets/storm-D6tvNT1N.jpg`;export{e as default};

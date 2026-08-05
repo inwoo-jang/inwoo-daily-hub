@@ -1,0 +1,1 @@
+var e=`/inwoo-daily-hub/assets/sunny-BAQK27S9.jpg`;export{e as default};

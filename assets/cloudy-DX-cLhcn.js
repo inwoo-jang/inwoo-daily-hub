@@ -1,0 +1,1 @@
+var e=`/inwoo-daily-hub/assets/cloudy-QAQ7IEnL.jpg`;export{e as default};
