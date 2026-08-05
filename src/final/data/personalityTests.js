@@ -25,6 +25,16 @@ const collect = (files) =>
     Object.entries(files).map(([path, url]) => [path.split('/').pop().replace('.jpg', ''), url]),
   )
 
+/**
+ * 칩에 붙는 작은 얼굴.
+ *
+ * 이모지는 기기마다 그림이 달라 목록에 넷을 늘어놓으면 결이 어긋난다.
+ * 각 테스트의 사진·아이콘에서 얼굴만 동그랗게 잘라 두고 그걸 쓴다.
+ */
+const chips = collect(
+  import.meta.glob('../../assets/tests/chips/*.jpg', { eager: true, import: 'default' }),
+)
+
 const art = {
   animal: collect(
     import.meta.glob('../../assets/tests/animal/*.jpg', { eager: true, import: 'default' }),
@@ -890,6 +900,11 @@ zombie.cover = [art.zombie.cover]
 animal.cover = [art.animal.dog, art.animal.cat, art.animal.owl, art.animal.fox]
 message.cover = [art.message.cover]
 story.cover = [art.story.cover]
+
+/* 테스트마다 칩 그림을 붙인다 (파일 이름이 곧 테스트 id) */
+for (const test of [animal, zombie, message, story]) {
+  test.chip = chips[test.id] ?? ''
+}
 
 /** 메뉴에 놓이는 순서 */
 export const tests = [animal, zombie, message, story]
