@@ -47,7 +47,7 @@ defineEmits(['select-region'])
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--muted);
-  background: var(--surface);
+  background: var(--panel-strong);
   cursor: pointer;
   font: inherit;
   font-size: 12.5px;

@@ -429,7 +429,7 @@ h3 {
   padding: 14px 16px;
   border: 1px solid var(--line);
   border-radius: 10px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--ink-soft);
   cursor: pointer;
   font: inherit;
@@ -755,7 +755,7 @@ blockquote::before {
   padding: 12px 16px;
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 .scores summary {

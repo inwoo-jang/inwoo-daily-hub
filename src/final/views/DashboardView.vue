@@ -558,7 +558,7 @@ const showDetail = (cityName) => {
  */
 .view-segmented :deep(.el-segmented__item-selected) {
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   box-shadow: 0 1px 4px rgb(15 23 42 / 8%);
 }
 
@@ -726,7 +726,7 @@ const showDetail = (cityName) => {
   padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 .sk-tile {
@@ -801,7 +801,7 @@ const showDetail = (cityName) => {
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--muted);
-  background: var(--surface);
+  background: var(--panel-strong);
   cursor: pointer;
   font: inherit;
   font-family: var(--font-mono);
@@ -834,7 +834,7 @@ const showDetail = (cityName) => {
   padding: 14px 18px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--ink-soft);
   font-size: 13.5px;
 }

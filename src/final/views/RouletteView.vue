@@ -706,7 +706,7 @@ h3 {
   padding: 10px 18px;
   border: 0;
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--ink-soft);
   cursor: pointer;
   font: inherit;
@@ -758,7 +758,7 @@ h3 {
   padding: 8px 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--muted);
   cursor: pointer;
   font: inherit;
@@ -908,7 +908,7 @@ h3 {
 
 .chips li.editing {
   padding-left: 8px;
-  background: var(--surface);
+  background: var(--panel-strong);
   box-shadow: inset 0 0 0 1px var(--slate);
 }
 

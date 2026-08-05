@@ -44,7 +44,7 @@ const OPTIONS = [
   padding: 2px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 .unit-switch button {

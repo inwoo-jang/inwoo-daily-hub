@@ -86,7 +86,7 @@ const groups = computed(() => {
   padding: 13px 15px;
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 .group-head {
@@ -153,7 +153,7 @@ const groups = computed(() => {
 /* 선택된 곳 — 카드와 같이 연한 회색 테두리 + 체크 */
 .chips li:has(.chip.selected) {
   border-color: var(--line-strong);
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 .chip-check {

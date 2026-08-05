@@ -82,7 +82,7 @@ defineProps({
 
 .search-inner input:focus {
   border-color: var(--accent);
-  background: var(--surface);
+  background: var(--panel-strong);
   outline: none;
 }
 

@@ -16,6 +16,7 @@ import { computed, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
+import logoUrl from '../assets/logo-dailyhub.png'
 import UiIcon from '../components/weather/UiIcon.vue'
 import WeatherBackdrop from '../components/weather/WeatherBackdrop.vue'
 import { useAuthStore } from '../stores/authStore'
@@ -78,26 +79,15 @@ const logout = () => {
 
     <!--
       맨 윗줄. 배경 위에 그대로 얹혀 투명하다.
-      이름표는 화면 왼쪽 끝, 톱니는 오른쪽 끝에 붙이고 메뉴만 가운데에 둔다.
+      로고는 화면 왼쪽 끝, 로그인과 톱니는 오른쪽 끝에 붙는다.
+      메뉴는 그 아래 줄에서 본문과 같은 폭을 쓴다.
     -->
     <header class="topbar">
       <RouterLink class="brand" :to="link('home')">
-        <span class="brand-mark">D</span>
-        Daily Hub
+        <img :src="logoUrl" alt="Daily Hub" />
       </RouterLink>
 
-      <nav class="nav">
-        <RouterLink :to="link('home')" :class="{ on: isHome }">홈</RouterLink>
-        <RouterLink :to="link('weather')" :class="{ on: isWeather }">날씨</RouterLink>
-        <RouterLink :to="link('tarot')" :class="{ on: isTarot }">운세</RouterLink>
-        <RouterLink :to="link('tests')" :class="{ on: isTests }">테스트</RouterLink>
-        <RouterLink :to="link('games')" :class="{ on: isGames }">게임</RouterLink>
-        <RouterLink :to="link('records')" :class="{ on: isRecords }">My</RouterLink>
-
-
-      </nav>
-
-      <!-- 오른쪽 끝 — 로그인 상태와 환경 설정. 메뉴 알약 밖에 둔다 -->
+      <!-- 오른쪽 끝 — 로그인 상태와 환경 설정 -->
       <div class="side">
         <span v-if="isLoggedIn" class="who">
           <b>{{ displayName }}</b>
@@ -113,6 +103,18 @@ const logout = () => {
         </RouterLink>
       </div>
     </header>
+
+    <!-- 메뉴는 아래 본문과 같은 폭을 쓴다. 창을 줄이면 같이 줄어든다 -->
+    <div class="navbar">
+      <nav class="nav">
+        <RouterLink :to="link('home')" :class="{ on: isHome }">홈</RouterLink>
+        <RouterLink :to="link('weather')" :class="{ on: isWeather }">날씨</RouterLink>
+        <RouterLink :to="link('tarot')" :class="{ on: isTarot }">운세</RouterLink>
+        <RouterLink :to="link('tests')" :class="{ on: isTests }">테스트</RouterLink>
+        <RouterLink :to="link('games')" :class="{ on: isGames }">게임</RouterLink>
+        <RouterLink :to="link('records')" :class="{ on: isRecords }">My</RouterLink>
+      </nav>
+    </div>
 
     <!-- 홈 · 날씨 · 운세가 전부 같은 폭을 쓰도록 한 기둥 안에 넣는다 -->
     <div class="column">
@@ -151,23 +153,41 @@ const logout = () => {
  * 맨 윗줄 — 셋을 1fr auto 1fr 로 나눠 메뉴가 화면 한가운데에 오게 한다.
  * space-between 으로는 이름표와 톱니의 폭이 달라 메뉴가 한쪽으로 밀린다.
  */
+/* 로고와 오른쪽 묶음은 화면 양 끝에 붙는다 */
 .topbar {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   gap: 12px;
   align-items: center;
-  padding: 16px 22px 4px;
+  justify-content: space-between;
+  padding: 14px 22px 10px;
 }
 
-.topbar .nav {
-  justify-self: center;
+/*
+ * 메뉴 줄. 아래 본문과 같은 폭·같은 자리에서 시작하고 끝난다.
+ * 창을 줄이면 둘이 같이 줄어들도록 폭 계산식을 그대로 맞춰 두었다.
+ */
+/* 메뉴와 본문은 같은 폭 계산식을 쓴다. 한쪽만 고치면 줄이 어긋난다 */
+.navbar,
+.column {
+  width: min(1100px, 100% - 40px);
+  margin: 0 auto;
+}
+
+.navbar .nav {
+  display: flex;
+  width: 100%;
+}
+
+/* 탭이 남는 폭을 똑같이 나눠 가진다 */
+.navbar .nav > a:not(.sign) {
+  flex: 1;
+  text-align: center;
 }
 
 .side {
   display: flex;
   gap: 6px;
   align-items: center;
-  justify-self: end;
 }
 
 /* 알약 밖으로 나왔으니 자기 몫의 자리를 직접 잡는다 */
@@ -184,14 +204,12 @@ const logout = () => {
   align-items: center;
   padding: 5px 5px 5px 12px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  background: var(--panel);
   backdrop-filter: blur(10px);
 }
 
 /* 배경만 전체를 쓰고, 읽는 것들은 가운데로 모은다 */
 .column {
-  width: min(1100px, 100% - 40px);
-  margin: 0 auto;
   padding: 14px 0 72px;
   display: grid;
   /*
@@ -203,9 +221,6 @@ const logout = () => {
   grid-template-columns: minmax(0, 1fr);
   align-content: start;
   gap: 12px;
-  width: 100%;
-  max-width: 660px;
-  margin: 0 auto;
 }
 
 .nav {
@@ -215,7 +230,7 @@ const logout = () => {
   align-items: center;
   padding: 2px;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  background: var(--panel);
   backdrop-filter: blur(10px);
 }
 
@@ -246,28 +261,20 @@ const logout = () => {
   margin-left: auto;
 }
 
+/*
+ * 로고는 흰색이다. 맑은 하늘 배경에서는 잘 보이지만 옅은 하늘·흐린 날에는
+ * 묻히므로, 아주 옅은 그림자를 깔아 어떤 배경에서도 가장자리가 살게 한다.
+ */
 .brand {
   display: inline-flex;
-  gap: 8px;
   align-items: center;
-  justify-self: start;
-  color: var(--ink);
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
   text-decoration: none;
 }
 
-.brand-mark {
-  display: grid;
-  width: 24px;
-  height: 24px;
-  place-items: center;
-  border-radius: 8px;
-  background: var(--accent);
-  color: var(--on-accent);
-  font-size: 13px;
-  font-weight: 800;
+.brand img {
+  display: block;
+  height: 26px;
+  filter: drop-shadow(0 1px 2px rgb(30 40 55 / 0.35));
 }
 
 /* 톱니는 화면 오른쪽 끝 */
@@ -285,7 +292,7 @@ const logout = () => {
 }
 
 .gear:hover {
-  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  background: var(--panel);
   color: var(--ink);
 }
 
@@ -328,7 +335,7 @@ const logout = () => {
   padding: 6px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--muted);
   cursor: pointer;
   font: inherit;

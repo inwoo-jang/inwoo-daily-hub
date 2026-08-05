@@ -430,7 +430,7 @@ const drawAgain = () => {
   display: grid;
   gap: 12px;
 }
-.tarot-intro, .spread, .reading, .tarot-deck { border: 0; border-radius: 22px; box-shadow: 0 1px 2px rgb(30 26 40 / 0.04), 0 10px 30px rgb(30 26 40 / 0.05); background: color-mix(in srgb, var(--surface) 82%, transparent); backdrop-filter: blur(12px); }
+.tarot-intro, .spread, .reading, .tarot-deck { border: 0; border-radius: 22px; box-shadow: 0 1px 2px rgb(30 26 40 / 0.04), 0 10px 30px rgb(30 26 40 / 0.05); background: var(--panel); backdrop-filter: blur(12px); }
 /* 머리말에만 아주 옅은 노을을 깐다. 이 화면이 다른 화면과 다른 시간대에 있다는 표시 */
 .tarot-intro {
   padding: 28px;
@@ -488,7 +488,7 @@ h2 { font-size: 24px; line-height: 1.25; }
 .slot-image { display: block; width: 100%; height: 100%; object-fit: cover; }
 .slot-image.reversed { transform: rotate(180deg); }
 .slot-empty { display: grid; width: 100%; height: 100%; gap: 8px; place-content: center; place-items: center; border: 1.5px dashed var(--line-strong); border-radius: 12px; background: color-mix(in srgb, var(--paper) 60%, transparent); transition: border-color .25s ease, background .25s ease; }
-.slot-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; color: var(--faint); background: color-mix(in srgb, var(--surface) 70%, transparent); font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
+.slot-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 50%; color: var(--faint); background: var(--panel); font-family: var(--font-mono); font-size: 14px; font-weight: 700; }
 .slot-wait { color: var(--faint); font-size: 11px; }
 .slot.active .slot-empty { border-color: var(--mystic-line); border-style: solid; background: var(--mystic-soft); animation: breathe 2.2s ease-in-out infinite; }
 .slot.active .slot-mark { color: #fff; background: var(--mystic); }
@@ -564,7 +564,7 @@ h2 { font-size: 24px; line-height: 1.25; }
 @keyframes square-up { 0%, 88% { transform: scale(1); } 94% { transform: scale(.955); } 100% { transform: scale(1); } }
 
 
-.ghost-button { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--surface); cursor: pointer; font: inherit; font-size: 12.5px; }
+.ghost-button { padding: 7px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--panel-strong); cursor: pointer; font: inherit; font-size: 12.5px; }
 .ghost-button:hover { border-color: var(--mystic); color: var(--mystic); }
 
 /* ── 무엇을 물을지 고르는 탭 ── */
@@ -597,7 +597,7 @@ h2 { font-size: 24px; line-height: 1.25; }
 .save-hint { margin: 0; color: var(--muted); font-size: 12.5px; }
 .save-hint.done { color: var(--mystic); font-weight: 600; }
 .save-hint a { color: var(--mystic); font-weight: 600; }
-.save-type select { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-soft); cursor: pointer; font: inherit; font-size: 12.5px; }
+.save-type select { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel-strong); color: var(--ink-soft); cursor: pointer; font: inherit; font-size: 12.5px; }
 .save-button { padding: 7px 16px; border: 1px solid var(--mystic); border-radius: 999px; background: var(--mystic); color: var(--on-accent); cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; }
 .save-button:disabled { opacity: 0.6; cursor: progress; }
 /* 화면 낭독기에만 읽히는 라벨 */

@@ -102,7 +102,7 @@ h3 {
   align-items: center;
   padding: 18px;
   border-radius: 18px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: inherit;
   text-decoration: none;
   transition:

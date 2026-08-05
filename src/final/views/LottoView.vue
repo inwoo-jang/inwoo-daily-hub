@@ -556,7 +556,7 @@ h3 {
 }
 
 .modes button.on {
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--ink);
   box-shadow: 0 2px 6px rgb(40 46 56 / 0.12);
 }
@@ -800,7 +800,7 @@ h3 {
   padding: 10px 18px;
   border: 0;
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--ink-soft);
   cursor: pointer;
   font: inherit;

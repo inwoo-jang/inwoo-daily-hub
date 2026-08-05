@@ -300,7 +300,7 @@ h3 {
 
 .observation > div {
   padding: 12px 14px;
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 dt {

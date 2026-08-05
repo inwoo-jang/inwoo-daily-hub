@@ -216,7 +216,7 @@ label span {
 .notice code {
   padding: 1px 6px;
   border-radius: 4px;
-  background: var(--surface);
+  background: var(--panel-strong);
   font-family: var(--font-mono);
 }
 
@@ -245,7 +245,7 @@ footer {
   padding: 7px 12px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--ink-soft);
   cursor: pointer;
   font: inherit;

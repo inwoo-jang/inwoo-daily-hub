@@ -273,7 +273,7 @@ const locationPerks = ['현재 기온', '체감온도', '강수확률', '미세�
 .menu {
   border: 1px solid color-mix(in srgb, var(--surface) 75%, transparent);
   border-radius: 22px;
-  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  background: var(--panel);
   backdrop-filter: blur(12px);
 }
 
@@ -328,7 +328,7 @@ h1 {
   padding: 9px 15px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  background: var(--panel);
   color: var(--ink-soft);
   font-size: 13px;
   font-weight: 600;

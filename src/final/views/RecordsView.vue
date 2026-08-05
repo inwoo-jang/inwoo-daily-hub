@@ -274,7 +274,7 @@ h3 {
   padding: 7px 14px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: var(--surface);
+  background: var(--panel-strong);
   color: var(--muted);
   cursor: pointer;
   font: inherit;

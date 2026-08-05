@@ -202,7 +202,7 @@ const heightOf = (temp) =>
   padding: 14px 16px;
   border: 1px solid var(--accent);
   border-radius: 16px;
-  background: var(--surface);
+  background: var(--panel-strong);
 }
 
 .detail-head {
@@ -281,7 +281,7 @@ const heightOf = (temp) =>
   border: 1px solid var(--line);
   border-radius: 50%;
   color: var(--muted);
-  background: var(--surface);
+  background: var(--panel-strong);
   cursor: pointer;
   font-size: 15px;
   line-height: 1;
@@ -360,7 +360,7 @@ const heightOf = (temp) =>
   border: 1px solid var(--line);
   border-radius: 999px;
   color: var(--muted);
-  background: var(--surface);
+  background: var(--panel-strong);
   cursor: pointer;
   font: inherit;
   font-size: 11.5px;
